@@ -1,0 +1,8 @@
+extras/data/
+.env**
+app_server/dump.rdb
+app_server/test.py
+app_server/test2.py
+docker-compose.yaml
+**/node_modules
+app_server/*.dump

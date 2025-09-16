@@ -1,0 +1,23 @@
+{
+  "name": "emails",
+  "version": "0.0.19",
+  "private": true,
+  "scripts": {
+    "build": "babel ./jsx_emails -d ../aws_lambda/sendmail/templates/ --extensions \".js,.jsx\"",
+    "dev": "email dev",
+    "export": "email export"
+  },
+  "dependencies": {
+    "@react-email/components": "0.0.17",
+    "react": "^18.2.0",
+    "react-email": "2.1.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/preset-react": "^7.24.1",
+    "@types/react": "18.2.33",
+    "@types/react-dom": "18.2.14"
+  }
+}

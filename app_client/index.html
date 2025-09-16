@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" translate="no">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+    <script>
+      // Ensure the gapi script is loaded, then call onApiLoad
+      function onApiLoad() {
+          gapi.load('picker', {
+            callback: function() {
+              // Now it's safe to use window.google.picker
+              const customViewsArray = [new window.google.picker.DocsView()];
+              // Use the view as needed...
+            }
+          });
+    }
+    window.addEventListener('load', () => {
+          if (window.gapi) {
+            onApiLoad();
+          } else {
+            console.error("Google API client not loaded yet.");
+          }
+    });
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/book-open-text.svg" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+    <meta
+      name="description"
+      content="AI Assisted Document Reading"
+    />
+    <link rel="apple-touch-icon" href="/logo.png" />
+
+    <title>pdfh</title>
+  </head>
+  <body >
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

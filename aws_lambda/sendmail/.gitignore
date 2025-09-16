@@ -1,0 +1,9 @@
+# package directories
+node_modules
+jspm_packages
+<<<<<<< HEAD
+
+=======
+>>>>>>> upstream/main
+# Serverless directories
+.serverless

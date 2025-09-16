@@ -1,0 +1,163 @@
+name: cd
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@v4
+
+        #- name: Test
+        #  run: |
+        #    cd site
+        #    npm install
+        #    npm test
+  client:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - run-tests
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '23.6.0'
+
+    - name: Install dependencies
+      working-directory: ./app_client
+      run: npm install
+
+    - name: Create .env File
+      working-directory: ./app_client
+      run: |
+        echo "VITE_SECRET_KEY=${{secrets.VITE_SECRET_KEY}}" > .env
+        echo "VITE_SITE_KEY=${{secrets.VITE_SITE_KEY}}" >>.env
+        echo "VITE_API_URL=${{secrets.VITE_API_URL}}" >>.env
+        echo "VITE_SITE_URL=${{secrets.VITE_SITE_URL}}" >>.env
+        echo "VITE_DOMAIN_NAME=${{secrets.VITE_DOMAIN_NAME}}" >>.env
+        echo "VITE_COMPANY_NAME=${{secrets.VITE_COMPANY_NAME}}" >>.env
+        echo "VITE_COMPANY_NUMBER=${{secrets.VITE_COMPANY_NUMBER}}" >>.env
+        echo "VITE_COMPANY_INFO_CONTACT=${{secrets.VITE_COMPANY_INFO_CONTACT}}" >>.env
+        echo "VITE_YOUTUBE_API_KEY=${{secrets.VITE_YOUTUBE_API_KEY}}" >>.env
+        echo "VITE_GOOGLE_CLIENT_ID=${{secrets.VITE_GOOGLE_CLIENT_ID}}" >>.env
+        echo "VITE_PUBLIC_POSTHOG_KEY=${{secrets.VITE_PUBLIC_POSTHOG_KEY}}" >>.env
+        echo "VITE_PUBLIC_POSTHOG_HOST=${{secrets.VITE_PUBLIC_POSTHOG_HOST}}" >>.env
+        echo "SKIP_PREFLIGHT_CHECK=${{secrets.SKIP_PREFLIGHT_CHECK}}" >>.env
+
+    - name: Build app
+      working-directory: ./app_client
+      run: npm run build
+
+    - name: Upload to S3
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --delete
+      env:
+        SOURCE_DIR: ./app_client/dist/
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_SITE_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_DATA_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_DATA_SECRET_ACCESS_KEY }}
+
+
+  server:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - client
+
+    steps:
+    - name: Clone
+      uses: actions/checkout@v4
+
+    - name: Create .env File
+      run: |
+        echo "auth_key=${{secrets.AUTH_KEY}}" > .env
+        echo "HasdIdsSalt=${{secrets.HASDIDSSALT}}" >> .env
+        echo "Captcha_secret=${{secrets.Captcha_secret}}" >> .env
+        echo "model_stream_url=${{secrets.MODEL_STREAM_URL}}" >> .env
+        echo "aws_data_user_name=${{secrets.aws_data_user_name}}" >> .env
+        echo "aws_data_access_key_id=${{secrets.aws_data_access_key_id}}" >> .env
+        echo "aws_data_secret_access_key=${{secrets.aws_data_secret_access_key}}" >> .env
+        echo "aws_data_region=${{secrets.aws_data_region}}" >> .env
+        echo "aws_data_bucket=${{secrets.aws_data_bucket}}" >> .env
+        echo "CDN_DOMAIN=${{secrets.CDN_DOMAIN}}" >> .env
+        echo "CDN_URL=${{secrets.CDN_URL}}" >> .env
+        echo "CND_data_dir=${{secrets.CND_data_dir}}" >> .env
+        echo "django_allowed_hosts=${{secrets.django_allowed_hosts}}" >> .env
+        echo "CSRF_TRUSTED_ORIGINS=${{secrets.CSRF_TRUSTED_ORIGINS}}" >> .env
+        echo "django_secret=${{secrets.django_secret}}" >> .env
+        echo "django_debug_state=${{secrets.django_debug_state}}" >> .env
+        echo "DB_ENGINE=${{secrets.DB_ENGINE}}" >> .env
+        echo "DB_NAME=${{secrets.DB_NAME}}" >> .env
+        echo "DB_USER=${{secrets.DB_USER}}" >> .env
+        echo "DB_PASSWORD=${{secrets.DB_PASSWORD}}" >> .env
+        echo "DB_HOST=${{secrets.DB_HOST}}" >> .env
+        echo "DB_PORT=${{secrets.DB_PORT}}" >> .env
+        echo "REDIS_LOCATION=${{secrets.REDIS_LOCATION}}" >> .env
+        echo "REDIS_PASSWORD=${{secrets.REDIS_PASSWORD}}" >> .env
+        echo "Stripe_live_mode=${{secrets.Stripe_live_mode}}" >> .env
+        echo "Stripe_live_publishable=${{secrets.Stripe_live_publishable}}" >> .env
+        echo "Stripe_live_secret=${{secrets.Stripe_live_secret}}" >> .env
+        echo "Stripe_test_publishable=${{secrets.Stripe_test_publishable}}" >> .env
+        echo "Stripe_test_secret=${{secrets.Stripe_test_secret}}" >> .env
+        echo "Stripe_pro_price=${{secrets.Stripe_pro_price}}" >> .env
+        echo "SES_function_name=${{secrets.SES_function_name}}" >> .env
+        echo "SES_region=${{secrets.SES_region}}" >> .env
+        echo "SES_EMAIL_main=${{secrets.SES_EMAIL_main}}" >> .env
+        echo "Site_domain=${{secrets.Site_domain}}" >> .env
+        echo "front_site_domain=${{secrets.front_site_domain}}" >> .env
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GIT_BUILD_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+    - name: Build and push Docker image
+      id: push
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+    - name: Run Django makemigrations
+      id: django-migrations
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        # Run the Django makemigrations command within a Docker container
+        docker images
+        docker run \
+          --rm \
+          -v $(pwd):/app \
+          -w /app \
+          ${{ steps.meta.outputs.tags }} \
+          sh -c "
+          ls -la
+          cd /var/www/html
+          ls -la
+          python3 manage.py makemigrations && python3 manage.py migrate
+          "

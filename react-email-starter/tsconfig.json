@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",                   // Choose ECMAScript version
+    "module": "CommonJS",                 // Specify module code generation (CommonJS for Node.js)
+    "strict": false,                       // Enable strict type checking
+    "esModuleInterop": true,              // Import interop with CommonJS modules
+    "skipLibCheck": true,                 // Skip type checking of declaration files
+    "outDir": "./jsx_emails",                   // Output directory for compiled files
+    "rootDir": "./emails",                   // Input directory (where your .ts/.tsx files are)
+    "forceConsistentCasingInFileNames": true // Ensure consistent casing
+  },
+}

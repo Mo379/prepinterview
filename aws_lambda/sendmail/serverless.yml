@@ -1,0 +1,20 @@
+service: pdfhub-sendmail
+frameworkVersion: "3"
+
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+
+functions:
+  app:
+    handler: index.handler
+    url: true
+    timeout: 10
+      #environment:
+      #  AWS_MAIL_REGION: ${env:AWS_MAIL_REGION}
+      #  AWS_SENDER_EMAIL: ${env:AWS_SENDER_EMAIL}
+package:
+  include:
+    - templates/**
