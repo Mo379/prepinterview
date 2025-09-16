@@ -1,5 +1,5 @@
 import { useAppStore } from "@/stores/appStore"
-import { FileText, PanelRightClose } from "lucide-react"
+import { BriefcaseBusiness, PanelRightClose } from "lucide-react"
 import { useShallow } from "zustand/shallow"
 import { UserProfileItem } from "./subcomponents"
 import { useUserStore } from "@/stores/userStore"
@@ -42,7 +42,7 @@ function Header() {
                             navigate('/')
                         }}
                     >
-                        <FileText size={45} strokeWidth={1.75} absoluteStrokeWidth className='m-auto w-[60px] h-[60px]' />
+                        <BriefcaseBusiness size={45} strokeWidth={1.75} absoluteStrokeWidth className='m-auto w-[60px] h-[60px]' />
                     </div>
                 )}
                 <div className='basis-6/12'>

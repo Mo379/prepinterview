@@ -260,19 +260,19 @@ UPLOAD_IMAGE_FORMATS = ["jpg", "jpeg", "png"]
 # Open ai configurations
 AUTH_KEY = decouple_config("auth_key")
 FILE_UPLOAD_URL = os.path.join(
-    decouple_config("model_stream_url"), "pdfhub_file_upload"
+    decouple_config("model_stream_url"), "prepinterview_file_upload"
 )
 MODEL_STRUCTURED_STREAM_URL = os.path.join(
-    decouple_config("model_stream_url"), "pdfhub_structred_stream"
+    decouple_config("model_stream_url"), "prepinterview_structred_stream"
 )
 MODEL_AUDIO_STREAM_URL = os.path.join(
-    decouple_config("model_stream_url"), "pdfhub_audio_stream"
+    decouple_config("model_stream_url"), "prepinterview_audio_stream"
 )
 PIPELINE_PROCESSING_URL = os.path.join(
-    decouple_config("model_stream_url"), "pdfhub_source_pipeline"
+    decouple_config("model_stream_url"), "prepinterview_source_pipeline"
 )
 MODEL_EMBEDDING_URL = os.path.join(
-    decouple_config("model_stream_url"), "pdfhub_embedding"
+    decouple_config("model_stream_url"), "prepinterview_embedding"
 )
 
 USAGE_FREQUENCY_LIMIT = 10

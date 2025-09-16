@@ -1,6 +1,6 @@
 "use client"
 import { useAppStore } from "@/stores/appStore"
-import { BookText, ChevronDown, CircleCheck, CircleDashed, CirclePlus, CircleX, Crown, Delete, FileText, Hourglass, Loader2, LogOut, MessagesSquare, PanelRightClose, Share2, Trash, UserPlus } from "lucide-react"
+import { BookText, ChevronDown, CircleCheck, CircleDashed, CirclePlus, CircleX, Crown, Delete, BriefcaseBusiness, Hourglass, Loader2, LogOut, MessagesSquare, PanelRightClose, Share2, Trash, UserPlus } from "lucide-react"
 import { useShallow } from "zustand/shallow"
 import {
     Accordion,
@@ -485,7 +485,7 @@ export function CreateSpaceDialog(props: { showSmall?: boolean }) {
                             <span
                                 className="mt-auto mb-auto text-[11px] w-full overflow-hidden"
                             >
-                                Create Space
+                                Create Case
                             </span>
                         </div>
                     </Button>
@@ -500,17 +500,17 @@ export function CreateSpaceDialog(props: { showSmall?: boolean }) {
                             <span
                                 className="mt-auto mb-auto text-lg w-full overflow-hidden"
                             >
-                                Create Space
+                                Create Case
                             </span>
                         </div>
                     </Button>
                 )}
                 <AlertDialogContent className='max-h-[80dvh] overflow-scroll scrollbar-hide'>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Create Space</AlertDialogTitle>
+                        <AlertDialogTitle>Create Case</AlertDialogTitle>
                         <AlertDialogDescription>
                             <span className='text-primary'>
-                                Provide a name for this space.
+                                Provide a name for this case.
                             </span>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -519,7 +519,7 @@ export function CreateSpaceDialog(props: { showSmall?: boolean }) {
                             <div className="flex flex-col justify-between w-[98%] md:w-[80%]">
                                 <div className="flex flex-col gap-2 w-full m-auto p-2">
                                     <Input
-                                        placeholder="space name..."
+                                        placeholder="case name..."
                                         id="name"
                                         {...register("name")}
                                         className={`
@@ -732,8 +732,8 @@ export function SideBar() {
                             <PanelRightClose />
                         </div>
                     </div>
-                    <FileText size={45} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
-                    <span className='m-auto text-[9px]'>PDF-HUB</span>
+                    <BriefcaseBusiness size={45} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
+                    <span className='m-auto text-[9px]'>PrepInterview</span>
                 </div>
                 <div className='p-1'>
                     {generalTutorActiveSpace ? (<ThreadsSheet type={1} space={generalTutorActiveSpace} />) : (

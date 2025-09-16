@@ -63,7 +63,7 @@ const manageMembership: any = [
         title: "Manage Your membership",
         popular: 0,
         description:
-            "For Managing your premium PDF-HUB Membership.",
+            "For Managing your premium PrepInterview Membership.",
         buttonText: "Manage Membership",
         benefitList: [
             "Change Billing Method",

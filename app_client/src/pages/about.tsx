@@ -5,7 +5,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { FileText } from "lucide-react"
+import { BriefcaseBusiness } from "lucide-react"
 function About() {
 
     return (
@@ -25,15 +25,15 @@ function About() {
                                 <div className="">
                                     <div className='flex flex-col justify-center'>
                                         <div className='flex flex-col m-auto justify-center text-primary stroke-primary'>
-                                            <FileText size={96} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
+                                            <BriefcaseBusiness size={96} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
                                             <div className='text-sm text-center text-xl'>
-                                                Welcome to Pdf-Hub
+                                                Welcome to PrepInterview
                                             </div>
                                             <div className='text-ring text-center/25 text-xs'>
-                                                Academic reading with AI assistance
+                                                Your Personalised Interview Preparation
                                             </div>
                                             <div className='text-ring  mt-8'>
-                                                PDF-Hub is a powerful platform for academics. You can upload any piece of work you're interested in and use AI the correct way to assist in your learning process.
+                                                PrepInterview Is A Simple & Powerful Personalised Interview Questions Generator.
                                             </div>
                                         </div>
                                     </div>

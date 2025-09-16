@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { BriefcaseBusiness } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const HIW_Hero = () => {
@@ -10,7 +10,7 @@ export const HIW_Hero = () => {
                 <div className="text-center lg:text-start space-y-2 m-auto">
                     <main className="text-2xl md:text-6xl font-bold">
                         <div className='flex flex-col m-auto justify-center'>
-                            <FileText strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
+                            <BriefcaseBusiness strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
                             <div className='text-3xl text-center mb-8'>
                                 PDF HUB
                                 <br />

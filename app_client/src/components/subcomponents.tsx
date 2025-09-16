@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { CirclePower, CircleUserRound, CreditCard, FileText, MailOpen, UserRound } from "lucide-react";
+import { CirclePower, CircleUserRound, CreditCard, BriefcaseBusiness, MailOpen, UserRound } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 import { useAppStore } from "@/stores/appStore";
@@ -73,12 +73,12 @@ function PrivateUserProfile({ closeTrigger }: any) {
                     ) : (
                         <div className='flex flex-col justify-center h-32'>
                             <div className='flex flex-col m-auto justify-center'>
-                                <FileText size={40} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
+                                <BriefcaseBusiness size={40} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
                                 <div className='text-xl text-center'>
-                                    Welcome to PDF-Hub
+                                    Welcome to PrepInterview
                                 </div>
                                 <div className='text-ring text-center/25 text-xs m-auto text-center'>
-                                    AI assistened resource reading
+                                    Simple & Powerful Interview Questions
                                 </div>
                             </div>
                         </div>
@@ -91,12 +91,12 @@ function PrivateUserProfile({ closeTrigger }: any) {
                         <>
                             <div className='flex flex-col justify-center h-32'>
                                 <div className='flex flex-col m-auto justify-center'>
-                                    <FileText size={40} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
+                                    <BriefcaseBusiness size={40} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
                                     <div className='text-xl text-center'>
-                                        Welcome to PDF-Hub
+                                        Welcome to PrepInterview
                                     </div>
                                     <div className='text-ring text-center/25 text-xs m-auto text-center'>
-                                        AI assistened resource reading
+                                        Simple & Powerful Interview Questions
                                     </div>
                                 </div>
                             </div>

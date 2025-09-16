@@ -1,4 +1,4 @@
-import { BookCheck, CircleSlash, CircleX, FileQuestion, FileSearch, FileText, Globe, Image, Loader, Loader2, RefreshCcw, Share2, Type, Youtube } from "lucide-react";
+import { BookCheck, CircleSlash, CircleX, FileQuestion, FileSearch, BriefcaseBusiness, Globe, Image, Loader, Loader2, RefreshCcw, Share2, Type, Youtube } from "lucide-react";
 import { ChatInput, SheetSources } from "@/components/chatinput";
 import { useShallow } from "zustand/shallow";
 import { useEffect, useState } from "react";
@@ -105,7 +105,7 @@ export function SpacesNewLesson() {
                     >
                         <div className={`flex flex-col justify-between`}>
                             <div className='text-center !w-full'>
-                                <FileText className="m-auto" size={35} />
+                                <BriefcaseBusiness className="m-auto" size={35} />
                                 <span>{generalTutorActiveSpace?.name}</span>
                             </div>
                             <form onSubmit={handleSubmit(onSubmit)} className='w-[90%] md:w-[75%] mt-24 mx-auto'>
@@ -120,7 +120,7 @@ export function SpacesNewLesson() {
                                             variant={'default'}
                                             disabled={!canStartRead}
                                         >
-                                            <span>Start Reading !</span>
+                                            <span>Start Prep!</span>
                                         </Button>
                                         <SheetSources is_general_tutor={true} object_hid={generalTutorActiveSpace?.hid} is_course_creator={true} hide_lesson_activations={true} />
                                     </div>

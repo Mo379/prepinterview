@@ -1,4 +1,4 @@
-import { FileText, Loader2, MessagesSquare } from "lucide-react";
+import { BriefcaseBusiness, Loader2, MessagesSquare } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import { useForm } from "react-hook-form";
 import { useAppStore } from "@/stores/appStore";
@@ -55,8 +55,8 @@ export function Home() {
                 `}>
                     <div>
                         <div className='text-center !w-full mb-8'>
-                            <FileText className="m-auto" size={35} />
-                            <span>Start Reading</span>
+                            <BriefcaseBusiness className="m-auto" size={35} />
+                            <span>Start Prep</span>
                         </div>
                         <div>
                             {generalTutorLoading.generalTutorGetSpaceSubscriptionList ? (<Loader2 className='m-auto animate-spin' />) : (
