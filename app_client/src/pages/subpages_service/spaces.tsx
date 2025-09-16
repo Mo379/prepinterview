@@ -109,7 +109,7 @@ export function SpacesNewLesson() {
                                 <span>{generalTutorActiveSpace?.name}</span>
                             </div>
                             <form onSubmit={handleSubmit(onSubmit)} className='w-[90%] md:w-[75%] mt-24 mx-auto'>
-                                <h1 className='w-full text-center text-3xl m-auto mb-4'> What are you reading next ?</h1>
+                                <h1 className='w-full text-center text-xl m-auto mb-4'>Add your CV, Role Description, or ANY Source !</h1>
                                 <div
                                     className={``}
                                 >
