@@ -26,27 +26,6 @@ register_converter(HashIdConverter, "hashid")
 
 
 urlpatterns = [
-    path("lesson_detail", generalTutorViews.lesson_detail),
-    path(
-        "lesson_detail/<hashid:id>",
-        generalTutorViews.lesson_detail,
-    ),
-    path("space_subscription_list", generalTutorViews.space_subscription_list),
-    path("space_subscription_detail", generalTutorViews.space_subscription_detail),
-    path(
-        "space_subscription_detail/<hashid:space_id>",
-        generalTutorViews.space_subscription_detail
-    ),
-    path("space_open", generalTutorViews.space_open),
-    path("space_join", generalTutorViews.space_join),
-    path("lesson_list", generalTutorViews.lesson_list),
-    path(
-        "lesson_list/<hashid:space_id>",
-        generalTutorViews.lesson_list,
-    ),
-    path("lesson_update", generalTutorViews.lesson_update),
-    path(
-        "lesson_update/<hashid:id>",
-        generalTutorViews.lesson_update,
-    ),
+    path("space_list", generalTutorViews.space_list),
+    path("space_detail", generalTutorViews.space_detail),
 ]

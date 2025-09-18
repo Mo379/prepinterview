@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Route, Routes, useNavigate, Outlet } from 'react-router-dom'
 import { useUserStore } from './stores/userStore';
 import { useShallow } from 'zustand/react/shallow'
@@ -38,14 +38,7 @@ import { useGeneralTutorStore } from './stores/generalTutorStore';
 
 
 
-function Layout(props: {
-    toggle_body_style: any,
-    mainBodyStyle: any,
-    sidebar_display_style: any,
-    toggle_sidebar_style: any,
-    isMdScreen: any,
-    sideBarWidth: any
-}) {
+function Layout() {
     const { generalTutorLesson } = useGeneralTutorStore(
         useShallow((state) => ({
             generalTutorLesson: state.generalTutorLesson,
@@ -109,8 +102,7 @@ function Layout(props: {
             <div className="flex md:flex-row-reverse !max-w-12/12 m-auto px-0 text-[9px] min-h-[100dvh] max-h-[100dvh] overflow-hidden">
                 {/* Main Body */}
                 <div
-                    className={`${props.toggle_body_style} m-0 text-[9px] p-[0px] min-h-[100dvh] max-h-[100dvh]`}
-                    style={props.mainBodyStyle}
+                    className={`w-full m-0 text-[9px] p-[0px] min-h-[100dvh] max-h-[100dvh]`}
                 >
                     <div className="flex flex-row m-0 text-[9px] w-full h-auto">
                         <Header />
@@ -121,25 +113,11 @@ function Layout(props: {
                         ref={containerRef}
                     >
                         {/* This is where the route-specific content will render */}
+                        <SideBar />
                         <Outlet />
                     </div>
                     <div className="flex flex-row m-0 p-0 text-[9px] w-full relative">
                         <CookieConsent />
-                    </div>
-                </div>
-                {/* Sidebar */}
-                <div
-                    className={`
-            ${props.sidebar_display_style}
-            ${props.toggle_sidebar_style}
-            m-0 p-0 text-[11px]
-            bg-neutral-100 dark:bg-secondary/30
-            min-h-[100dvh] max-h-[100dvh]
-          `}
-                    style={!props.isMdScreen ? { width: props.sideBarWidth } : { width: '90%' }}
-                >
-                    <div id="scrollableDiv" className="basis-12/12 overflow-scroll w-full h-full border-r border-primary/20 rounded-xl scrollbar-hide">
-                        <SideBar />
                     </div>
                 </div>
             </div>
@@ -148,16 +126,13 @@ function Layout(props: {
 }
 
 function App() {
-    const { appToast, appResetToast, appRouteTo, appResetRouteTo, appResetLoading, appShowSideBar, isMdScreen, setIsMdScreen, setShowSideBar } = useAppStore(
+    const { appToast, appResetToast, appRouteTo, appResetRouteTo, appResetLoading, setIsMdScreen } = useAppStore(
         useShallow((state) => ({
             appToast: state.toast,
             appResetToast: state.resetToast,
             appRouteTo: state.routeto,
             appResetRouteTo: state.resetRouteTo,
             appResetLoading: state.resetLoading,
-            appShowSideBar: state.showSideBar,
-            setShowSideBar: state.setShowSideBar,
-            isMdScreen: state.isMdScreen,
             setIsMdScreen: state.setIsMdScreen,
         })),
     )
@@ -211,8 +186,6 @@ function App() {
             serviceResetLoading: state.resetLoading,
         })),
     )
-    const sideBarWidth = 260
-    const [mainBodyWidth, setMainBodyWidth] = useState(window.innerWidth - sideBarWidth);
 
     const navigate = useNavigate()
     const { toast } = useToast()
@@ -234,10 +207,6 @@ function App() {
 
         // Call handler right away so state gets updated with initial window size
         handleResize();
-        if (window.innerWidth <= mdScreenSize) {
-            setShowSideBar(false)
-        }
-
         // Clean up
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -363,48 +332,14 @@ function App() {
 
     ]); // Empty dependency array means this effect will only run once, when the component mounts.
     // static params  and style
-    useEffect(() => {
-        const handleResize = () => setMainBodyWidth(window.innerWidth - sideBarWidth);
 
-        // Attach resize event listener
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup the event listener
-        return () => window.removeEventListener('resize', handleResize);
-    }, [sideBarWidth]);
-    useEffect(() => {
-        if (!auth.hid && appShowSideBar) {
-            setShowSideBar(false)
-        }
-    }, [auth, appShowSideBar]);
-
-
-    let sidebar_display_style = 'flex flex-col'
-    let toggle_sidebar_style = `w-full md:!w-[${sideBarWidth}px] md:!min-w-[${sideBarWidth}px] md:!max-w-[${sideBarWidth}px]`
-    let toggle_body_style = `hidden md:flex md:flex-col md:w-[${mainBodyWidth}px]`
-    let mainBodyStyle: { width: string } | any = {
-        width: `${mainBodyWidth}px`,
-    };
-    if (appShowSideBar === false) {
-        sidebar_display_style = 'hidden'
-        toggle_sidebar_style = ''
-        toggle_body_style = 'flex flex-col w-full'
-        mainBodyStyle = {}
-    }
 
     return (
         <Routes>
             <Route
                 path="/"
                 element={
-                    <Layout
-                        toggle_body_style={toggle_body_style}
-                        mainBodyStyle={mainBodyStyle}
-                        sidebar_display_style={sidebar_display_style}
-                        toggle_sidebar_style={toggle_sidebar_style}
-                        isMdScreen={isMdScreen}
-                        sideBarWidth={sideBarWidth}
-                    />
+                    <Layout/>
                 }
             >
                 {/* Define all your nested routes here */}

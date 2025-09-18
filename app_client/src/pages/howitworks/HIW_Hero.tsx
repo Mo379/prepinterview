@@ -12,9 +12,8 @@ export const HIW_Hero = () => {
                         <div className='flex flex-col m-auto justify-center'>
                             <BriefcaseBusiness strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
                             <div className='text-3xl text-center mb-8'>
-                                PDF HUB
+                                Prep Interview
                                 <br />
-
                             </div>
                         </div>
                     </main>

@@ -76,7 +76,6 @@ INSTALLED_APPS = [
     # app
     "notes.apps.NotesConfig",
     "general_tutor.apps.GeneralTutorConfig",
-    "sources.apps.SourcesConfig",
     "user.apps.UserConfig",
     # native
     "django.contrib.sites",
@@ -264,15 +263,6 @@ FILE_UPLOAD_URL = os.path.join(
 )
 MODEL_STRUCTURED_STREAM_URL = os.path.join(
     decouple_config("model_stream_url"), "prepinterview_structred_stream"
-)
-MODEL_AUDIO_STREAM_URL = os.path.join(
-    decouple_config("model_stream_url"), "prepinterview_audio_stream"
-)
-PIPELINE_PROCESSING_URL = os.path.join(
-    decouple_config("model_stream_url"), "prepinterview_source_pipeline"
-)
-MODEL_EMBEDDING_URL = os.path.join(
-    decouple_config("model_stream_url"), "prepinterview_embedding"
 )
 
 USAGE_FREQUENCY_LIMIT = 10

@@ -18,8 +18,6 @@ const appStateSchema = z.object({
     isMdScreen: z.union([z.boolean(), z.null()]),
     navTab: z.optional(z.string()),
     setIsMdScreen: z.function(z.tuple([z.boolean()]), z.void()),
-    showSideBar: z.union([z.boolean(), z.null()]),
-    setShowSideBar: z.function(z.tuple([z.boolean()]), z.void()),
 
     toast: z.any(),
 
@@ -42,10 +40,6 @@ export const useAppStore = create(
         activeSubComponent: null,
         setIsMdScreen: (value: boolean) => {
             set(() => ({ isMdScreen: value }));
-        },
-        showSideBar: true,
-        setShowSideBar: (value: boolean) => {
-            set(() => ({ showSideBar: value }));
         },
 
         toast: null,

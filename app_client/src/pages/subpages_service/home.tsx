@@ -12,12 +12,10 @@ import { useSourceStore } from "@/stores/sourceStore";
 
 export function Home() {
     const {
-        isMdScreen, appSetShowSideBar
+        isMdScreen
     } = useAppStore(
         useShallow((state) => ({
             isMdScreen: state.isMdScreen,
-            showSideBar: state.showSideBar,
-            appSetShowSideBar: state.setShowSideBar,
         })),
     )
     const {
@@ -70,7 +68,6 @@ export function Home() {
                                                 size="icon"
                                                 className='relative w-44 mr-1 h-10 mt-1 text-center !p-4 flex flex-row justify-center'
                                                 onClick={() => {
-                                                    appSetShowSideBar(true)
                                                     if (
                                                         space_subscription?.space?.hid !== generalTutorActiveSpace?.hid
                                                     ) {

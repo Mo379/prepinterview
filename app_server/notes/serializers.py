@@ -17,8 +17,6 @@ class RabiitSerializer(serializers.ModelSerializer):
             "hid",
             "name",
             "prompt",
-            "highlighted_text",
-            "selected_image_url",
             "content",
         ]
 

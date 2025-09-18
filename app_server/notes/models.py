@@ -1,5 +1,5 @@
 from django.db import models
-from general_tutor.models import GeneralTutorLesson
+from general_tutor.models import GeneralTutorSpace
 
 general_learning_method = """
 ***
@@ -29,14 +29,12 @@ this should be in markdown
 
 
 class Rabiit(models.Model):
-    generaltutorlesson = models.ForeignKey(
-        GeneralTutorLesson, on_delete=models.CASCADE, db_index=True, null=True
+    space = models.ForeignKey(
+        GeneralTutorSpace, on_delete=models.CASCADE, db_index=True, null=True
     )
 
     name = models.TextField(default="", null=True, db_index=True)
     prompt = models.TextField(default="", null=True)
-    highlighted_text = models.TextField(default="", null=True)
-    selected_image_url = models.TextField(default="", null=True)
     content = models.JSONField(default=dict, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

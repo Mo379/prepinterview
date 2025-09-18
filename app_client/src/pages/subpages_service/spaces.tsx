@@ -237,11 +237,10 @@ export function SpacesNewLesson() {
 }
 export function Spaces() {
     const {
-        isMdScreen, showSideBar
+        isMdScreen
     } = useAppStore(
         useShallow((state) => ({
             isMdScreen: state.isMdScreen,
-            showSideBar: state.showSideBar,
         })),
     )
     const {
@@ -290,7 +289,6 @@ export function Spaces() {
                             ) : (
                                 "sticky bottom-0 !mb-0"
                             )}
-                                    ${isMdScreen && showSideBar ? 'hidden' : 'flex'}
                                     justify-center mx-auto
                                     z-50
                                     `}
@@ -389,13 +387,6 @@ export function ShareSpace() {
 }
 export function JoinSpace() {
     const {
-        setShowSideBar,
-    } = useAppStore(
-        useShallow((state) => ({
-            setShowSideBar: state.setShowSideBar,
-        })),
-    )
-    const {
         generalTutorJoinSpace,
         generalTutorLoading,
     } = useGeneralTutorStore(
@@ -408,9 +399,6 @@ export function JoinSpace() {
     const { setError } = useForm<any>()
 
     const { space_name, space_hid } = useParams();
-    useEffect(() => {
-        setShowSideBar(false)
-    }, [])
     return (
         <section className="flex flex-row place-items-center py-8 md:py-8">
             <div className="text-center lg:text-start space-y-2 m-auto">
@@ -428,7 +416,6 @@ export function JoinSpace() {
                                     onClick={() => {
                                         if (space_hid) {
                                             generalTutorJoinSpace(setError, space_hid).then(() => {
-                                                setShowSideBar(true)
                                                 navigate('/')
                                             })
                                         }

@@ -1105,7 +1105,6 @@ export function SheetRabbit(props: { is_general_tutor: boolean, lesson_hid: stri
         </Sheet >
     )
 }
-
 export function ChatInput(props: {
     is_general_tutor: boolean,
 }) {

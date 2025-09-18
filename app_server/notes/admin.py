@@ -8,7 +8,7 @@ from notes.models import (
 
 
 class RabiitAdmin(admin.ModelAdmin):
-    raw_id_fields = ["generaltutorlesson"]
+    raw_id_fields = ["space"]
 
 
 # Register your models here.

@@ -1,17 +1,10 @@
-import { useAppStore } from "@/stores/appStore"
-import { BriefcaseBusiness, PanelRightClose } from "lucide-react"
+import { BriefcaseBusiness } from "lucide-react"
 import { useShallow } from "zustand/shallow"
 import { UserProfileItem } from "./subcomponents"
 import { useUserStore } from "@/stores/userStore"
 import { useNavigate } from "react-router-dom"
 
 function Header() {
-    const { appShowSideBar, appSetShowSideBar } = useAppStore(
-        useShallow((state) => ({
-            appShowSideBar: state.showSideBar,
-            appSetShowSideBar: state.setShowSideBar,
-        })),
-    )
     const { auth } = useUserStore(
         useShallow((state) => ({
             auth: state.auth,
@@ -25,16 +18,20 @@ function Header() {
             <div className='flex flex-row justify-between w-full p-2 z-50 bg-background'>
                 {auth.hid ? (
                     <div
-                        className={`p-1 w-4/4 p-2 flex items-center font-bold text-center
+                        className={`p-1 w-4/4 flex items-center font-bold text-center
                         float-right
                         text-xl
                         basis-6/12
                     `}
                     >
-                        <PanelRightClose
-                            className={`cursor-pointer mr-4`}
-                            onClick={() => appSetShowSideBar(appShowSideBar === false)}
-                        />
+                        <div className='flex flex-col hover:cursor-pointer'
+                            onClick={() => {
+                                navigate('/')
+                            }}
+                        >
+                            <BriefcaseBusiness size={45} strokeWidth={1.75} absoluteStrokeWidth className='m-auto' />
+                            <span className='m-auto text-[9px]'>PrepInterview</span>
+                        </div>
                     </div>
                 ) : (
                     <div className='flex flex-col p-2 hover:cursor-pointer'

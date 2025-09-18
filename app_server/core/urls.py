@@ -30,7 +30,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("user/", include("user.urls")),
     path("notes/", include("notes.urls")),
-    path("sources/", include("sources.urls")),
     path("general_tutor/", include("general_tutor.urls")),
 ]
 

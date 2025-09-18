@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from general_tutor.models import (
-    GeneralTutorLesson,
+    GeneralTutorSpace,
 )
 from notes import functions_endpoint
 from notes.models import (
@@ -21,47 +21,23 @@ from notes.serializers import (
     RabiitSerializer,
 )
 from core.utils import h_decode, h_encode
-from sources.models import get_context_chunks, get_query_string_embedding_vector
 
 
 @api_view(["POST", "GET"])
 @permission_classes([IsAuthenticated])
-def rabiit_list(request, lesson_type=None, lesson_id=None, format=None):
+def rabiit_list(request, space_id=None, format=None):
     if request.method == "POST":
         try:
-            is_general_tutor = request.data["is_general_tutor"]
-            lesson_id = h_decode(request.data["lesson_hid"])
-            highlighted_text = request.data["highlightedText"]
-            selected_image_url = request.data.get("selectedImageUrl") or None
+            space_id = h_decode(request.data["space_hid"])
             rabiit_prompt = request.data["prompt"]
-            if is_general_tutor:
-                lesson = GeneralTutorLesson.objects.get(pk=lesson_id)
-                lesson_context = f"""
-                chapter/area of study name: {lesson.space_subscription.space.name}
-                {lesson.lessontitle}
-                {lesson.source.full_content}
-                """
-                filter_params = {"generaltutorlesson": lesson}
-                source_filter_params = {"space": lesson.space_subscription.space}
-                assert lesson.user == request.user
 
-            embedding_result = get_query_string_embedding_vector(
-                f"""
-                {highlighted_text}
-                {rabiit_prompt}
-            """
-            )
-            search_vector = embedding_result["embeddings"][0]["embedding"]
-            citation_context, bibliography = get_context_chunks(
-                source_filter_params, search_vector
-            )
+            space_obj = GeneralTutorSpace.objects.get(pk=space_id)
+            assert space_obj.user == request.user
 
             rabiit_obj = Rabiit.objects.create(
-                **filter_params,
+                space=space_obj,
                 name=(rabiit_prompt),
                 prompt=rabiit_prompt,
-                highlighted_text=highlighted_text,
-                selected_image_url=selected_image_url,
             )
 
             #
@@ -70,7 +46,6 @@ def rabiit_list(request, lesson_type=None, lesson_id=None, format=None):
                 "return_url": f"{settings.SITE_URL}/notes/function_app_endpoint",
                 "prompt_type_value": "create_rabiit",
                 "rabiit_hid": h_encode(rabiit_obj.id),
-                "is_general_tutor": is_general_tutor,
             }
             # Optionally add the image
             messages = [
@@ -88,62 +63,25 @@ def rabiit_list(request, lesson_type=None, lesson_id=None, format=None):
                     Follow the highlighting notation:
                     {markdown_annotation_prompt}
 
-
-                    ***
-
-                    Unless the user prompt specifically requests similar
-                    details, avoid repeating this content.
-                    ***
-
-                    {citation_context}
-
-                    here is information about the topic/paper/article/book
-                    that the studen is learning about, use this as a primary
-                    source of information:
-                    {lesson_context}
-
-                    **
-                    if an image is provided then only explain it
-                    within the context
-                    **
+                    here is information the user provided, this *MAY* include
+                    things about them (CV) and the job description,
+                    use this as a primary, source of information:
+                    {rabiit_obj.content}
                     """,
                 },
                 {
                     "role": "user",
                     "content": f"""
-                    {general_learning_method}
-                    Follow the math notation requirements strictly when
-                    writing maths.
-                    {math_notation_prompt}
-
-                    Follow the highlighting notation:
-                    {markdown_annotation_prompt}
-
-                    {rabiit_obj.prompt}
+                        {rabiit_obj.prompt}
                     """,
                 },
             ]
-            if selected_image_url:
-                messages.append(
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": selected_image_url,
-                                },
-                            }
-                        ],
-                    }
-                )
             request_ticket = {
                 "payload": {
                     "messages": messages
                 },
                 "function_app_endpoint": function_app_endpoint,
                 "structured_output_class": "cited_response",
-                "bibliography": bibliography,
                 "access_token": str(short_token.access_token),
                 "lambda_url": settings.MODEL_STRUCTURED_STREAM_URL,
             }
@@ -165,13 +103,12 @@ def rabiit_list(request, lesson_type=None, lesson_id=None, format=None):
             )
     elif request.method == "GET":
         try:
-            if lesson_type == "general_tutor_lesson":
-                lesson = GeneralTutorLesson.objects.get(pk=lesson_id)
-                filter_params = {"generaltutorlesson": lesson}
-                assert lesson.user == request.user
+            space = GeneralTutorSpace.objects.get(pk=space_id)
+            assert space.user == request.user
 
             rabiit_list = Rabiit.objects.filter(
-                **filter_params).order_by("-created_at")
+                space=space_id
+            ).order_by("-created_at")
         except Exception as e:
             print(e)
             return Response(
@@ -201,10 +138,7 @@ def rabiit_detail(request, rabiit_id, format=None):
         try:
             rabiit_obj = Rabiit.objects.get(pk=rabiit_id)
 
-            if rabiit_obj.generaltutorlesson:
-                assert rabiit_obj.generaltutorlesson.user == request.user
-            else:
-                assert rabiit_obj.lesson.coursesubscription.user == request.user
+            assert rabiit_obj.space.user == request.user
             assert rabiit_obj is not False
             rabiit_obj.delete()
         except Exception as e:

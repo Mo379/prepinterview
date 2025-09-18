@@ -1,5 +1,4 @@
 "use client"
-import { useAppStore } from "@/stores/appStore"
 import { BookText, ChevronDown, CircleCheck, CircleDashed, CirclePlus, CircleX, Crown, Delete, BriefcaseBusiness, Hourglass, Loader2, LogOut, MessagesSquare, PanelRightClose, Share2, Trash, UserPlus } from "lucide-react"
 import { useShallow } from "zustand/shallow"
 import {
@@ -58,7 +57,7 @@ export function EraseSpace(props: { space_hid: string }) {
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
                         <span className='text-primary'>
-                            This will erase this thread space, your progress
+                            This will erase this interview case, your progress
                             and data will be lost.
                         </span>
                     </AlertDialogDescription>
@@ -74,7 +73,7 @@ export function EraseSpace(props: { space_hid: string }) {
                                         generalTutorDeleteSpace(setError, props.space_hid)
                                         setActiveGeneralTutorSpace(null)
                                     }}
-                                > Erase Space</Button>
+                                > Erase Case</Button>
                             </AlertDialogCancel>
                         </div>
                         <AlertDialogCancel className=''>Cancel</AlertDialogCancel>
@@ -153,12 +152,6 @@ export function DeleteThread(props: { general_tutor_lesson: any, space_hid: stri
 
 export function ThreadsSheet(props: { type: number, space: any }) {
     // Extract state from your stores
-    const { isMdScreen, appSetShowSideBar } = useAppStore(
-        useShallow((state) => ({
-            isMdScreen: state.isMdScreen,
-            appSetShowSideBar: state.setShowSideBar,
-        })),
-    )
     const {
         generalTutorLessonList,
         generalTutorInfinteScroll,
@@ -317,9 +310,6 @@ export function ThreadsSheet(props: { type: number, space: any }) {
                         event?.preventDefault()
                         event.stopPropagation()
                         navigate('/new_reading')
-                        if (isMdScreen) {
-                            appSetShowSideBar(false)
-                        }
                     }}
                 >
                     <div className='flex flex-row text-md text-primary/85'>
@@ -345,9 +335,6 @@ export function ThreadsSheet(props: { type: number, space: any }) {
                                         generalTutorGetLesson(setError, general_tutor_lesson.hid).then(() => {
                                             ScrollTopChatPage()
                                         })
-                                    }
-                                    if (isMdScreen) {
-                                        appSetShowSideBar(false)
                                     }
                                     navigate('/space')
                                 }}
@@ -675,13 +662,6 @@ export function SpacesList() {
 }
 
 export function SideBar() {
-    const { isMdScreen, appShowSideBar, appSetShowSideBar } = useAppStore(
-        useShallow((state) => ({
-            isMdScreen: state.isMdScreen,
-            appShowSideBar: state.showSideBar,
-            appSetShowSideBar: state.setShowSideBar,
-        })),
-    )
     const { auth } = useUserStore(
         useShallow((state) => ({
             auth: state.auth,
@@ -726,7 +706,6 @@ export function SideBar() {
                             onClick={(e) => {
                                 e.preventDefault()
                                 e.stopPropagation()
-                                appSetShowSideBar(appShowSideBar === false)
                             }}
                         >
                             <PanelRightClose />
@@ -749,9 +728,6 @@ export function SideBar() {
                                 className='w-full h-10 mt-1 text-start !p-2 flex flex-row justify-start bg-transparent hidden'
                                 onClick={() => {
                                     navigate('/account/billing')
-                                    if (isMdScreen) {
-                                        appSetShowSideBar(false);
-                                    }
                                 }}
                             >
                                 <UserPlus size={35} className="mt-auto mb-auto stroke-blue-500" /><span className="mt-auto mb-auto"> Upgrade to pro</span>
