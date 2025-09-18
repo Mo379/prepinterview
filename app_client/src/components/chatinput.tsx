@@ -103,7 +103,7 @@ export function DeleteRabiit(props: { rabiit_hid: string, setOpenDeleteNote: any
         </form>
     )
 }
-export function SheetRabbit(props: { lesson_hid: string, allow_propagration?: boolean }) {
+export function SheetRabbit(props: { space_hid: string }) {
     const {
         isMdScreen,
     } = useAppStore(
@@ -176,11 +176,9 @@ export function SheetRabbit(props: { lesson_hid: string, allow_propagration?: bo
             }}>
                 <span className={`${button_style} ml-1 flex flex-row`}
                     onClick={(e) => {
-                        if (!props.allow_propagration) {
-                            e.stopPropagation();
-                        }
+                        e.stopPropagation();
                         if (rabiits === null) {
-                            getRabiits(setError, props.lesson_hid)
+                            getRabiits(setError, props.space_hid)
                         }
                     }}
                 >

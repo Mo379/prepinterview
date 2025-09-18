@@ -15,6 +15,7 @@ class GeneralTutorSpaceSerializer(serializers.ModelSerializer):
         fields = [
             "hid",
             "name",
+            "content",
         ]
 
     def get_hid(self, obj):

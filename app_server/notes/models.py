@@ -43,5 +43,5 @@ class Rabiit(models.Model):
     def __str__(self):
         return (
             str(self.pk) + "-" +
-            "-" + str(self.generaltutorlesson)
+            "-" + str(self.space)
         )

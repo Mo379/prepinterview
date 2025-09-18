@@ -25,76 +25,19 @@ import Pricing from './pages/pricing';
 import { useServiceStore } from './stores/serviceStore';
 import { CheckOutSuccess } from './pages/subpages_account/checkoutsuccess';
 import { Home } from './pages/subpages_service/home';
-import { JoinSpace, ShareSpace, Spaces, SpacesNewLesson } from './pages/subpages_service/spaces';
+import { Spaces } from './pages/subpages_service/spaces';
 import HowItWorks from './pages/howitworks';
 import { useStreamStore } from './stores/streamStore';
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/tokyo-night-dark.css'; // or another highlight.js theme
 import { useNoteStore } from './stores/noteStore';
-import { useGeneralTutorStore } from './stores/generalTutorStore';
 
 
 
 function Layout() {
-    const { generalTutorLesson } = useGeneralTutorStore(
-        useShallow((state) => ({
-            generalTutorLesson: state.generalTutorLesson,
-        })),
-    );
-
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const generalTutorLessonRef = useRef(generalTutorLesson);
-
     // Keep ref updated
-    useEffect(() => {
-        generalTutorLessonRef.current = generalTutorLesson;
-    }, [generalTutorLesson]);
-
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
-
-        const onScroll = () => {
-            const headings = Array.from(
-                container.querySelectorAll<HTMLHeadingElement>('h1, h2, h3')
-            );
-
-            const containerBottom = container.getBoundingClientRect().bottom;
-
-            let lowest: HTMLHeadingElement | null = null;
-            let maxVisibleTop = -Infinity;
-
-            headings.forEach((heading) => {
-                const headingTop = heading.getBoundingClientRect().top;
-
-                // Only consider headings within or above the visible container
-                if (headingTop < containerBottom && headingTop > maxVisibleTop) {
-                    maxVisibleTop = headingTop;
-                    lowest = heading;
-                }
-            });
-
-            if (lowest && generalTutorLessonRef.current && 'source' in generalTutorLessonRef.current) {
-                const index = generalTutorLessonRef.current.source.content.outline.findIndex(
-                    ([_, id]: any) => lowest && id === lowest.id
-                );
-                if (index !== -1) {
-                    useGeneralTutorStore.setState({ closeHeadingIndex: index });
-                }
-            }
-        };
-
-        container.addEventListener('scroll', onScroll);
-
-        // run once initially
-        onScroll();
-
-        return () => {
-            container.removeEventListener('scroll', onScroll);
-        };
-    }, []);
-
     return (
         <div className="APP w-screen h-[100dvh]">
             <div className="flex md:flex-row-reverse !max-w-12/12 m-auto px-0 text-[9px] min-h-[100dvh] max-h-[100dvh] overflow-hidden">
@@ -106,7 +49,7 @@ function Layout() {
                         <Header />
                     </div>
                     <div
-                        className="flex flex-col px-0 text-[12px] h-full w-full overflow-scroll scrollbar-hide"
+                        className="flex flex-col px-0 text-[12px] h-[85vh] w-full overflow-scroll scrollbar-hide"
                         id="chat_page_top"
                         ref={containerRef}
                     >
@@ -346,10 +289,7 @@ function App() {
 
                     <Route element={<PrivateRoute redirectTo="/howitworks" />}>
                         <Route path="/" element={<Home />} />
-                        <Route path="/space" element={<Spaces />} />
-                        <Route path="/new_reading" element={<SpacesNewLesson />} />
-                        <Route path="/share_space/:space_name/:space_hid" element={<ShareSpace />} />
-                        <Route path="/join_space/:space_name/:space_hid" element={<JoinSpace />} />
+                        <Route path="/case" element={<Spaces />} />
                         <Route path="contact" element={<Contact />} />
                         <Route path="account" element={<Settings />} />
                         <Route path="account/settings" element={<Settings />} />

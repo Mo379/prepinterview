@@ -1,121 +1,75 @@
-import { BriefcaseBusiness, Loader2, Share2 } from "lucide-react";
 import { SheetRabbit } from "@/components/chatinput";
 import { useShallow } from "zustand/shallow";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { SiteURL, useAppStore } from "@/stores/appStore";
-import { useUserStore } from "@/stores/userStore";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useAppStore } from "@/stores/appStore";
 
 import { useGeneralTutorStore } from "@/stores/generalTutorStore";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useParams } from "react-router-dom";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { handleAlertColors } from "@/components/errors";
 import { QuestionsOutline } from "@/components/questionsoutline";
 import { useNoteStore } from "@/stores/noteStore";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useForm } from "react-hook-form";
+import { Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
-export function SpacesNewLesson() {
-    const {
-        isMdScreen
-    } = useAppStore(
+export function EraseSpace(props: { space_hid: string }) {
+    const { generalTutorDeleteSpace, setActiveGeneralTutorSpace } = useGeneralTutorStore(
         useShallow((state) => ({
-            isMdScreen: state.isMdScreen,
+            generalTutorDeleteSpace: state.generalTutorDeleteSpace,
+            setActiveGeneralTutorSpace: state.setActiveGeneralTutorSpace
         })),
     )
-    const {
-        generalTutorCreateLesson,
-        generalTutorActiveSpace,
-    } = useGeneralTutorStore(
-        useShallow((state) => ({
-            generalTutorCreateLesson: state.generalTutorCreateLesson,
-            generalTutorActiveSpace: state.generalTutorActiveSpace,
-            generalTutorActiveLesson: state.generalTutorActiveLesson,
-        })),
-    )
-    const { setError } = useForm<any>()
-    const [canStartRead, setCanStartRead] = useState<any>(false);
-    const navigate = useNavigate()
 
-    const FormSchema = z.object({
-        reading_title: z.string().min(1, 'Please provide a reading title.'),
-        source_hid: z.string().min(1, 'Please select one of the reading options.'),
-    })
-    type FormType = z.infer<typeof FormSchema>
-
-
-    const { watch, setValue, register, handleSubmit, formState: { errors } } = useForm<FormType>({
-        resolver: zodResolver(FormSchema)
-    })
-
-
-    const onSubmit: SubmitHandler<FormType> = (data) => {
-        if (generalTutorActiveSpace && data.source_hid && data.reading_title) {
-            generalTutorCreateLesson(setError, generalTutorActiveSpace.hid, data.source_hid, data.reading_title)
-            navigate('/space')
-        }
-    }
-
-    const readingTitle = watch("reading_title");
-    const sourceHid = watch("source_hid");
-
-    useEffect(() => {
-        if (!readingTitle || !sourceHid || readingTitle.length < 1 || sourceHid.length < 1) {
-            setCanStartRead(false);
-            return;
-        }
-        setCanStartRead(true);
-    }, [readingTitle, sourceHid]);
-
+    const { setError } = useForm<any>({})
     return (
-        (generalTutorActiveSpace && 'hid' in generalTutorActiveSpace) && (
-            <div className='flex flex-row  m-auto !min-h-full !break-words text-pretty px-1 md:px-2 dark:text-primary/80 w-full'>
-                <div className={`flex flex-col md:flex-row-reverse mx-auto text-xl  w-full ${isMdScreen ? ('p-0') : ("p-2 !justify-center")} gap-2`}>
-                    <div className={`
-                        flex flex-col justify-between text-break text-wrap w-[min(98%,900px)] mx-auto min-h-[105vh]
-                        `}
-                    >
-                        <div className={`flex flex-col justify-between`}>
-                            <div className='text-center !w-full'>
-                                <BriefcaseBusiness className="m-auto" size={35} />
-                                <span>{generalTutorActiveSpace?.name}</span>
-                            </div>
-                            <form onSubmit={handleSubmit(onSubmit)} className='w-[90%] md:w-[75%] mt-24 mx-auto'>
-                                <h1 className='w-full text-center text-xl m-auto mb-4'>Add your CV, Role Description, or ANY Source !</h1>
-                                <div
-                                    className={``}
-                                >
-                                    <div className='w-full flex flex-col md:flex-row justify-center gap-2 mb-8'>
-                                        <Button
-                                            type='submit'
-                                            className='!w-44 m-auto md:m-0'
-                                            variant={'default'}
-                                            disabled={!canStartRead}
-                                        >
-                                            <span>Start Prep!</span>
-                                        </Button>
-                                    </div>
-                                    <div className="grid gap-2 mb-4">
-                                        <Label htmlFor="email" className={`mb-2 text-${errors.reading_title && handleAlertColors(errors.reading_title)}`} >Reading Title</Label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Title of this reading..."
-                                            {...register("reading_title", { required: true })}
-                                            className={`w-[85%] md:w-[40%] border border-${errors.reading_title && handleAlertColors(errors.reading_title)
-                                                } focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                            value={watch("reading_title") || ""} // controlled by RHF
-                                            onChange={(e) => setValue("reading_title", e.target.value)} // update RHF state
-                                        />
-                                    </div>
-                                </div >
-                            </form>
+        <AlertDialog >
+            <AlertDialogTrigger className='flex flex-row w-fit text-primary mb-auto mr-1 text-center justify-center p-2 bg-transparent mt-8'>
+                <Trash
+                    size={14}
+                    strokeWidth={1.75}
+                    absoluteStrokeWidth
+                    className='text-primary/70 hover:text-primary hover:cursor-pointer'
+                />
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        <span className='text-primary'>
+                            This will erase this interview case, your progress
+                            and data will be lost.
+                        </span>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <div className='w-full flex flex-row justify-between my-4'>
+                        <div className='w-40'>
+                            <AlertDialogCancel className="m-0 p-0 border-0">
+                                <Button
+                                    type='submit'
+                                    className='w-full text-destructive'
+                                    onClick={() => {
+                                        generalTutorDeleteSpace(setError, props.space_hid)
+                                        setActiveGeneralTutorSpace(null)
+                                    }}
+                                > Erase Case
+                                </Button>
+                            </AlertDialogCancel>
                         </div>
+                        <AlertDialogCancel className=''>Cancel</AlertDialogCancel>
                     </div>
-                </div>
-            </div>
-        )
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     )
 }
 export function Spaces() {
@@ -127,10 +81,10 @@ export function Spaces() {
         })),
     )
     const {
-        generalTutorLesson,
+        generalTutorActiveSpace,
     } = useGeneralTutorStore(
         useShallow((state) => ({
-            generalTutorLesson: state.generalTutorLesson,
+            generalTutorActiveSpace: state.generalTutorActiveSpace,
         })),
     )
     const {
@@ -140,12 +94,18 @@ export function Spaces() {
             resetNotes: state.resetNotes,
         })),
     )
+    const navigate = useNavigate()
 
 
-    const lesson_hid = 'hid' in generalTutorLesson ? generalTutorLesson.hid : ''
+    if (!generalTutorActiveSpace || !('hid' in generalTutorActiveSpace)) {
+        navigate('/')
+        return null
+    }
+    const space_hid = generalTutorActiveSpace && 'hid' in generalTutorActiveSpace ? generalTutorActiveSpace.hid : ''
+
     useEffect(() => {
         resetNotes()
-    }, [generalTutorLesson])
+    }, [generalTutorActiveSpace])
 
     return (
         <div className='flex flex-row  m-auto !min-h-full !break-words text-pretty px-1 md:px-2 dark:text-primary/80 w-full'>
@@ -160,148 +120,16 @@ export function Spaces() {
                                 !w-full
                             `}
                         >
-                            <QuestionsOutline />
-                            <SheetRabbit lesson_hid={lesson_hid} />
+                            <h1 className='m-auto text-center underline underline-offset-4 text-3xl mb-8'>
+                                {generalTutorActiveSpace.name}
+                            </h1>
+                            <QuestionsOutline space_hid={space_hid} />
+                            <SheetRabbit space_hid={space_hid} />
+                            <EraseSpace space_hid={space_hid} />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
-export function ShareSpace() {
-    const {
-        auth,
-    } = useUserStore(
-        useShallow((state) => ({
-            auth: state.auth,
-        })),
-    )
-    const {
-        generalTutorSpaceEnableSharing,
-        generalTutorActiveSpace,
-        generalTutorLoading
-    } = useGeneralTutorStore(
-        useShallow((state) => ({
-            generalTutorSpaceEnableSharing: state.generalTutorSpaceEnableSharing,
-            generalTutorActiveSpace: state.generalTutorActiveSpace,
-            generalTutorLoading: state.loading,
-        })),
-    )
-    const { setError } = useForm<any>()
-
-    const { space_name, space_hid } = useParams();
-    return (
-        <section className="flex flex-row place-items-center py-8 md:py-8">
-            <div className="text-center lg:text-start space-y-2 m-auto">
-                <main className="text-2xl md:text-6xl font-bold">
-                    <div className='flex flex-col m-auto justify-center'>
-                        <Share2 strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
-                        <div className='text-3xl text-center mb-8'>
-                            <br />
-                            <span className='text-ring text-center/25'>
-                                Space: {space_name}
-                            </span>
-                            <br />
-                            {(
-                                auth &&
-                                'hid' in auth &&
-                                generalTutorActiveSpace &&
-                                !generalTutorActiveSpace.is_open &&
-                                generalTutorActiveSpace.hid === space_hid &&
-                                generalTutorActiveSpace.owner_hid === auth.hid
-                            ) ? (
-                                <div className='flex flex-col w-full justify-center gap-4'>
-                                    <Button variant="default" size="icon" className='mt-auto mb-auto w-fit m-auto text-2xl p-12 mt-8'
-                                        onClick={() => {
-                                            if (space_hid) {
-                                                generalTutorSpaceEnableSharing(setError, space_hid)
-                                            }
-                                        }}
-                                        disabled={generalTutorLoading.generalTutorSpaceEnableSharing}
-                                    >
-                                        {generalTutorLoading.generalTutorSpaceEnableSharing ? (
-                                            <Loader2 className='animate-spin' />
-                                        ) : (
-                                            <>
-                                                Open Sharing
-                                            </>
-                                        )}
-                                    </Button>
-                                    <span className='text-ring text-center/25 text-[18px] mt-8'>
-                                        Warning: Once sharing is opened, a space cannot be closed and anyone with the link can join!
-                                    </span>
-                                </div>
-                            ) : (
-                                <>
-                                    <span className='text-ring text-center/25 text-[18px] mt-8'>
-                                        Copy and share this link
-                                    </span>
-                                    <br />
-                                    <span className='text-ring text-center/25 text-[18px]'>
-                                        {`${SiteURL}/join_space/${space_name}/${space_hid}`}
-                                    </span>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </main>
-
-            </div>
-        </section>
-    )
-}
-export function JoinSpace() {
-    const {
-        generalTutorJoinSpace,
-        generalTutorLoading,
-    } = useGeneralTutorStore(
-        useShallow((state) => ({
-            generalTutorJoinSpace: state.generalTutorJoinSpace,
-            generalTutorLoading: state.loading,
-        })),
-    )
-    const navigate = useNavigate()
-    const { setError } = useForm<any>()
-
-    const { space_name, space_hid } = useParams();
-    return (
-        <section className="flex flex-row place-items-center py-8 md:py-8">
-            <div className="text-center lg:text-start space-y-2 m-auto">
-                <main className="text-2xl md:text-6xl font-bold">
-                    <div className='flex flex-col m-auto justify-center'>
-                        <Share2 strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
-                        <div className='text-3xl text-center mb-8'>
-                            <br />
-                            <span className='text-ring text-center/25'>
-                                Space: {space_name}
-                            </span>
-                            <br />
-                            <div className='flex flex-col md:flex-row w-full justify-center gap-4'>
-                                <Button variant="default" size="icon" className='mt-auto mb-auto w-fit m-auto text-2xl p-12 mt-8'
-                                    onClick={() => {
-                                        if (space_hid) {
-                                            generalTutorJoinSpace(setError, space_hid).then(() => {
-                                                navigate('/')
-                                            })
-                                        }
-                                    }}
-                                    disabled={generalTutorLoading.generalTutorJoinSpace}
-                                >
-                                    {generalTutorLoading.generalTutorJoinSpace ? (
-                                        <Loader2 className='animate-spin' />
-                                    ) : (
-                                        <>
-                                            Join Space
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </main>
-
-            </div>
-        </section>
     )
 }

@@ -249,7 +249,7 @@ function Settings() {
     return (
         <>
             <div className='flex flex-col md:flex-row h-fit'>
-                <div className="flex flex-col w-full h-full items-center justify-center p-6">
+                <div className="flex flex-col w-full md:w-[70%] h-full items-center justify-center p-6 m-auto">
                     <h1 className='text-4xl m-auto'> Account settings </h1>
                     <AccountInformationForm />
                     <DangerAccountDeletionForm />

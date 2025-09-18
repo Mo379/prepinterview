@@ -28,4 +28,8 @@ register_converter(HashIdConverter, "hashid")
 urlpatterns = [
     path("space_list", generalTutorViews.space_list),
     path("space_detail", generalTutorViews.space_detail),
+    path(
+        "space_detail/<hashid:space_id>",
+        generalTutorViews.space_detail
+    ),
 ]

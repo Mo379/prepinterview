@@ -27,7 +27,7 @@ register_converter(HashIdConverter, "hashid")
 
 urlpatterns = [
     path("rabiit_list", notesViews.rabiit_list),
-    path("rabiit_list/<lesson_type>/<hashid:lesson_id>", notesViews.rabiit_list),
+    path("rabiit_list/<hashid:space_id>", notesViews.rabiit_list),
     path("rabiit_detail", notesViews.rabiit_detail),
     path(
         "rabiit_detail/<hashid:rabiit_id>",

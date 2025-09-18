@@ -77,26 +77,6 @@ def space_detail(request, space_id, format=None):
             },
             status=status.HTTP_200_OK,
         )
-    elif request.method == "PUT":
-        space_obj = GeneralTutorSpace.objects.get(pk=space_id)
-        serializer = GeneralTutorSpaceSerializer(
-            space_obj,
-            data=request.data
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
-                {
-                    "data": serializer.data,
-                    "message": "Subscription detail successfully modified",
-                },
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {"message": "Failed to load subscription details"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
     elif request.method == "DELETE":
         try:
             space_obj = GeneralTutorSpace.objects.get(pk=space_id)
@@ -109,7 +89,7 @@ def space_detail(request, space_id, format=None):
         else:
             return Response(
                 {
-                    "data": h_encode(space_obj.id),
+                    "data": h_encode(space_id),
                     "message": "Case successfully deleted",
                 },
                 status=status.HTTP_200_OK,

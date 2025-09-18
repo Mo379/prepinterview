@@ -6,11 +6,10 @@ import { useGeneralTutorStore } from "@/stores/generalTutorStore";
 import { useNoteStore } from "@/stores/noteStore";
 
 
-export function QuestionsOutline() {
-    const { generalTutorLesson } = useGeneralTutorStore(
+export function QuestionsOutline(props: { space_hid: string }) {
+    const { generalTutorActiveSpace } = useGeneralTutorStore(
         useShallow((state) => ({
-            generalTutorLesson: state.generalTutorLesson,
-            generalTutorLoading: state.loading,
+            generalTutorActiveSpace: state.generalTutorActiveSpace,
         })),
     );
     const { setRabiitsSheet, createRabiit } = useNoteStore(
@@ -28,7 +27,7 @@ export function QuestionsOutline() {
     return (
         <div className="flex flex-col justify-center !w-full">
             <div className='flex flex-col flex-wrap gap-2'>
-                {('source' in generalTutorLesson && generalTutorLesson.source.concept_outline.concepts) &&
+                {('' in generalTutorActiveSpace && generalTutorLesson.source.concept_outline.concepts) &&
                     generalTutorLesson.source.concept_outline.concepts.concept_sections.map((concept_section: any, section_idx: number) => (
                         <div
                             key={`concept_section_${section_idx}`}
