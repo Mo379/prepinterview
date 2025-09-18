@@ -1,5 +1,5 @@
-import { BookCheck, CircleSlash, CircleX, FileQuestion, FileSearch, BriefcaseBusiness, Globe, Image, Loader, Loader2, RefreshCcw, Share2, Type, Youtube } from "lucide-react";
-import { ChatInput, SheetSources } from "@/components/chatinput";
+import { BriefcaseBusiness, Loader2, Share2 } from "lucide-react";
+import { SheetRabbit } from "@/components/chatinput";
 import { useShallow } from "zustand/shallow";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -7,27 +7,15 @@ import { SiteURL, useAppStore } from "@/stores/appStore";
 import { useUserStore } from "@/stores/userStore";
 import { Button } from "@/components/ui/button";
 
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-
 import { useGeneralTutorStore } from "@/stores/generalTutorStore";
-import { Skeleton } from "@nextui-org/react";
-import { ConceptOutline, Slides } from "@/components/slides";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import { FaFilePdf, FaRegFileWord } from "react-icons/fa6";
-import { useSourceStore } from "@/stores/sourceStore";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { handleAlertColors } from "@/components/errors";
+import { QuestionsOutline } from "@/components/questionsoutline";
+import { useNoteStore } from "@/stores/noteStore";
 
 export function SpacesNewLesson() {
     const {
@@ -45,18 +33,6 @@ export function SpacesNewLesson() {
             generalTutorCreateLesson: state.generalTutorCreateLesson,
             generalTutorActiveSpace: state.generalTutorActiveSpace,
             generalTutorActiveLesson: state.generalTutorActiveLesson,
-        })),
-    )
-    const { sources, getSources, sourceLoading } = useSourceStore(
-        useShallow((state) => ({
-            sources: state.sources,
-            source_activation: state.source_activation,
-            getSources: state.getSources,
-            getSourceActivation: state.getSourceActivation,
-            deleteSource: state.deleteSource,
-            getSourceStatus: state.getSourceStatus,
-            updateSourceLessonActivation: state.updateSourceLessonActivation,
-            sourceLoading: state.loading,
         })),
     )
     const { setError } = useForm<any>()
@@ -81,8 +57,6 @@ export function SpacesNewLesson() {
             navigate('/space')
         }
     }
-
-    const source_icon_style = 'w-5 h-5 mt-auto mb-auto'
 
     const readingTitle = watch("reading_title");
     const sourceHid = watch("source_hid");
@@ -122,7 +96,6 @@ export function SpacesNewLesson() {
                                         >
                                             <span>Start Prep!</span>
                                         </Button>
-                                        <SheetSources is_general_tutor={true} object_hid={generalTutorActiveSpace?.hid} is_course_creator={true} hide_lesson_activations={true} />
                                     </div>
                                     <div className="grid gap-2 mb-4">
                                         <Label htmlFor="email" className={`mb-2 text-${errors.reading_title && handleAlertColors(errors.reading_title)}`} >Reading Title</Label>
@@ -137,96 +110,6 @@ export function SpacesNewLesson() {
                                         />
                                     </div>
                                 </div >
-                                {sourceLoading.getSources ? (<Skeleton className='w-[90%] min-h-[30vh] rounded-xl' />) : (
-                                    <Table className={`border border-${errors.source_hid && handleAlertColors(errors.source_hid)} mb-44`}>
-                                        <TableCaption></TableCaption>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="flex flex-row justify-between">
-                                                    <span className='mt-auto mb-auto'>Reading Options</span>
-                                                    <Button
-                                                        type='submit'
-                                                        className='!w-fit mt-auto mb-auto'
-                                                        variant={'outline'}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation()
-                                                            e.preventDefault()
-                                                            getSources(setError, true, generalTutorActiveSpace?.hid)
-                                                        }}
-                                                    >
-                                                        <RefreshCcw className='!w-8 mt-auto mb-auto' />
-                                                    </Button>
-                                                </TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {sourceLoading.getSources || sourceLoading.uploadSource ? (
-                                                <TableRow >
-                                                    <TableCell><Skeleton className='h-[35px] rounded-xl w-fit' /></TableCell>
-                                                </TableRow>
-                                            ) : (null)}
-                                            {sources?.source_list?.map((source: any) => (
-                                                <TableRow key={`source-list-${source.hid}`}>
-                                                    <TableCell
-                                                        className="flex flex-row gap-2 font-medium text-primary/60 hover:text-primary justify-between"
-                                                    >
-                                                        <div className='flex flex-row gap-4'>
-                                                            {source.source_type === 'PDF' && (<FaFilePdf className={`${source_icon_style} text-red-700`} />)}
-                                                            {source.source_type === 'WORD' && (<FaRegFileWord className={`${source_icon_style} text-blue-400`} />)}
-                                                            {source.source_type === 'TEXT' && (<Type className={`${source_icon_style} stroke-primary`} />)}
-                                                            {source.source_type === 'WEB' && (<Globe className={`${source_icon_style} stroke-primary`} />)}
-                                                            {source.source_type === 'WEBDOC' && (<FileSearch className={`${source_icon_style} stroke-primary`} />)}
-                                                            {source.source_type === 'Youtube' && (<Youtube className={`${source_icon_style} stroke-red-600`} />)}
-                                                            {source.source_type === 'IMG' && (<Image className={`${source_icon_style} stroke-green-600`} />)}
-                                                            {!source.source_type && (<FileQuestion className={`${source_icon_style} stroke-primary/25`} />)}
-                                                            <Button
-                                                                variant={watch("source_hid") === source.hid ? "default" : "outline"}
-                                                                className="mt-auto mb-auto hover:cursor-pointer"
-                                                                disabled={source.processing_status !== 'pipeline_completed' || !(['PDF', 'WORD', 'WEBDOC'].includes(source.source_type))}
-                                                                onClick={(e) => {
-                                                                    e.preventDefault()
-                                                                    e.stopPropagation()
-                                                                    if (watch("source_hid") === source.hid) {
-                                                                        setValue("source_hid", ""); // deselect
-                                                                    } else {
-                                                                        setValue("source_hid", source.hid); // select
-                                                                    }
-                                                                }}
-                                                            >
-                                                                {source.name}
-                                                            </Button>
-                                                        </div>
-                                                        {!source.pipeline_uploaded ? (
-                                                            <>
-                                                                <Loader2 className='animate-spin mt-auto mb-auto' />
-                                                            </>
-                                                        ) : (
-                                                            !(['PDF', 'WORD', 'WEBDOC'].includes(source.source_type)) ? (
-                                                                <span className='mt-auto mb-auto'>context only (not a document!)</span>
-                                                            ) : (
-                                                                <>
-                                                                    {source.processing_status === 'pipeline_started' && (
-                                                                        <>
-                                                                            <span className='mt-auto mb-auto'>Processing...</span><Loader className='animate-spin mt-auto mb-auto' />
-                                                                        </>
-                                                                    )}
-                                                                    {source.processing_status === 'pipeline_completed' && (
-                                                                        <BookCheck className='stroke-green-600/80 mt-auto mb-auto' />
-                                                                    )}
-                                                                    {source.processing_status === 'pipeline_pending' && (
-                                                                        <CircleSlash className='mt-auto mb-auto' />
-                                                                    )}
-                                                                    {source.processing_status === 'pipeline_failed' && (
-                                                                        <CircleX className='mt-auto mb-auto stroke-red-400' />
-                                                                    )}
-                                                                </>
-                                                            ))}
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                )}
                             </form>
                         </div>
                     </div>
@@ -244,21 +127,25 @@ export function Spaces() {
         })),
     )
     const {
-        auth,
-    } = useUserStore(
+        generalTutorLesson,
+    } = useGeneralTutorStore(
         useShallow((state) => ({
-            auth: state.auth
+            generalTutorLesson: state.generalTutorLesson,
         })),
     )
     const {
-        learningMode,
-        generalTutorActiveLesson,
-    } = useGeneralTutorStore(
+        resetNotes,
+    } = useNoteStore(
         useShallow((state) => ({
-            learningMode: state.learningMode,
-            generalTutorActiveLesson: state.generalTutorActiveLesson,
+            resetNotes: state.resetNotes,
         })),
     )
+
+
+    const lesson_hid = 'hid' in generalTutorLesson ? generalTutorLesson.hid : ''
+    useEffect(() => {
+        resetNotes()
+    }, [generalTutorLesson])
 
     return (
         <div className='flex flex-row  m-auto !min-h-full !break-words text-pretty px-1 md:px-2 dark:text-primary/80 w-full'>
@@ -273,31 +160,10 @@ export function Spaces() {
                                 !w-full
                             `}
                         >
-                            {learningMode === 'concepts' && (
-                                <ConceptOutline />
-                            )}
-                            {learningMode === 'reading' && (
-                                <Slides />
-                            )}
+                            <QuestionsOutline />
+                            <SheetRabbit lesson_hid={lesson_hid} />
                         </div>
                     </div>
-                    {(auth.hid && generalTutorActiveLesson) && (
-                        <div className={`
-                                    w-full
-                                   ${isMdScreen ? (
-                                "sticky bottom-0 !mb-0"
-                            ) : (
-                                "sticky bottom-0 !mb-0"
-                            )}
-                                    justify-center mx-auto
-                                    z-50
-                                    `}
-                        >
-                            <ChatInput
-                                is_general_tutor={true}
-                            />
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

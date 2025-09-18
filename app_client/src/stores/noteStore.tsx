@@ -38,7 +38,7 @@ const noteStateSchema = z.object({
     addHighlightNote: z.function(z.tuple([z.any()])).returns(z.void()),
 
     createRabiit: z.function(z.tuple([z.any(), z.boolean(), z.string(), z.string(), z.string(), z.string()]), z.promise(z.any())),
-    getRabiits: z.function().args(z.any(), z.boolean(), z.string()).returns(z.void()),
+    getRabiits: z.function().args(z.any(), z.string()).returns(z.void()),
     deleteRabiit: z.function().args(z.any(), z.string()).returns(z.void()),
 });
 
@@ -184,7 +184,7 @@ export const useNoteStore = create(
                 }));
             }
         },
-        getRabiits: async (setError: any, is_general_tutor: boolean, lesson_hid: string) => {
+        getRabiits: async (setError: any, lesson_hid: string) => {
             const accessToken = useUserStore.getState().auth.accessToken
             set((state) => ({
                 loading: { ...state.loading, getRabiits: true },
@@ -193,7 +193,7 @@ export const useNoteStore = create(
             await new Promise(resolve => setTimeout(resolve, 300));
             try {
                 let response = await fetch(
-                    `${APIURL}/notes/rabiit_list/${is_general_tutor ? 'general_tutor_lesson' : 'course_lesson'}/${lesson_hid}.json`,
+                    `${APIURL}/notes/rabiit_list/${lesson_hid}.json`,
                     {
                         method: 'GET',
                         headers: {

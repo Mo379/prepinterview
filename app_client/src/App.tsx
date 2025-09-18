@@ -24,12 +24,10 @@ import Contact from './pages/contact';
 import Pricing from './pages/pricing';
 import { useServiceStore } from './stores/serviceStore';
 import { CheckOutSuccess } from './pages/subpages_account/checkoutsuccess';
-import { SideBar } from './components/sidebar';
 import { Home } from './pages/subpages_service/home';
 import { JoinSpace, ShareSpace, Spaces, SpacesNewLesson } from './pages/subpages_service/spaces';
 import HowItWorks from './pages/howitworks';
 import { useStreamStore } from './stores/streamStore';
-import { useSourceStore } from './stores/sourceStore';
 
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/tokyo-night-dark.css'; // or another highlight.js theme
@@ -113,7 +111,6 @@ function Layout() {
                         ref={containerRef}
                     >
                         {/* This is where the route-specific content will render */}
-                        <SideBar />
                         <Outlet />
                     </div>
                     <div className="flex flex-row m-0 p-0 text-[9px] w-full relative">
@@ -157,15 +154,6 @@ function App() {
             streamRouteTo: state.routeto,
             streamResetRouteTo: state.resetRouteTo,
             streamResetLoading: state.resetLoading,
-        })),
-    )
-    const { sourceToast, sourceResetToast, sourceRouteTo, sourceResetRouteTo, sourceResetLoading } = useSourceStore(
-        useShallow((state) => ({
-            sourceToast: state.toast,
-            sourceResetToast: state.resetToast,
-            sourceRouteTo: state.routeto,
-            sourceResetRouteTo: state.resetRouteTo,
-            sourceResetLoading: state.resetLoading,
         })),
     )
     const { noteToast, noteResetToast, noteRouteTo, noteResetRouteTo, noteResetLoading } = useNoteStore(
@@ -253,7 +241,6 @@ function App() {
         userResetLoading()
         serviceResetLoading()
         streamResetLoading()
-        sourceResetLoading()
         noteResetLoading()
     }, []); // Empty dependency array means this effect will only run once, when the component mounts.
 
@@ -270,9 +257,6 @@ function App() {
         } else if (streamToast) {
             toast(streamToast)
             streamResetToast()
-        } else if (sourceToast) {
-            toast(sourceToast)
-            sourceResetToast()
         } else if (noteToast) {
             toast(noteToast)
             noteResetToast()
@@ -286,8 +270,6 @@ function App() {
         appResetToast,
         streamToast,
         streamResetToast,
-        sourceToast,
-        sourceResetToast,
         noteToast,
         noteResetToast,
     ]); // Empty dependency array means this effect will only run once, when the component mounts.
@@ -306,9 +288,6 @@ function App() {
         } else if (streamRouteTo) {
             navigate(streamRouteTo)
             streamResetRouteTo()
-        } else if (sourceRouteTo) {
-            navigate(sourceRouteTo)
-            sourceResetRouteTo()
         } else if (noteRouteTo) {
             navigate(noteRouteTo)
             noteResetRouteTo()
@@ -323,9 +302,6 @@ function App() {
 
         streamResetRouteTo,
         streamRouteTo,
-
-        sourceResetRouteTo,
-        sourceRouteTo,
 
         noteResetRouteTo,
         noteRouteTo,
