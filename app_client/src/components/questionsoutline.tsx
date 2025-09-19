@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form";
 import { useGeneralTutorStore } from "@/stores/generalTutorStore";
 import { useNoteStore } from "@/stores/noteStore";
+import { CircleCheckBig } from "lucide-react";
 
 
 export function QuestionsOutline(props: { space_hid: string }) {
@@ -19,46 +20,43 @@ export function QuestionsOutline(props: { space_hid: string }) {
         })),
     );
     const { setError } = useForm<any>()
-    //createRabiit(setError, props.is_general_tutor, props.lesson_hid, highlightedText, data.prompt, selectedImage).then((data) => {
-    //    reset();
-    //    setActiveRabiit(data.hid)
-    //})
 
     return (
         <div className="flex flex-col justify-center !w-full">
             <div className='flex flex-col flex-wrap gap-2'>
-                {('' in generalTutorActiveSpace && generalTutorLesson.source.concept_outline.concepts) &&
-                    generalTutorLesson.source.concept_outline.concepts.concept_sections.map((concept_section: any, section_idx: number) => (
+                {('content' in generalTutorActiveSpace && generalTutorActiveSpace.content.questions_outline) &&
+                    generalTutorActiveSpace.content.questions_outline.map((concept_section: any, section_idx: number) => (
                         <div
                             key={`concept_section_${section_idx}`}
                             className='mb-[80px]'
                         >
                             <div className="text-2xl underline underline-offset-4 mb-4">
-                                {concept_section.section_name
-                                    .toLowerCase()
+                                {concept_section?.category_name?.toLowerCase()
                                     .replace(/\b\w/g, (char: any) => char.toUpperCase())}
                             </div>
                             <div className='flex flex-col gap-2 '>
-                                {concept_section.concepts.map((concept: any, concept_idx: number) => (
+                                {concept_section?.category_questions?.map((concept: any, concept_idx: number) => (
                                     <Button
                                         key={`concept_item_${concept_idx}`}
                                         variant={'outline'}
-                                        className='flex flex-wrap h-auto max-w-full h-auto text-wrap'
+                                        className='flex flex-row justify-between flex-wrap h-auto max-w-full h-auto text-wrap ml-0'
                                         onClick={() => {
                                             createRabiit(
                                                 setError,
-                                                true,
-                                                generalTutorLesson.hid,
-                                                '',
-                                                `In only a few paragraphs explain the following concept in the context of this material: ${concept_section.section_name}:${concept}`,
-                                                ''
+                                                props.space_hid,
+                                                `${concept}`,
+                                                `In only a few paragraphs explain the following concept in the context of this material: ${concept_section.category_name}:${concept}`,
                                             )
                                             setRabiitsSheet(true)
                                         }}
                                     >
-                                        {concept
-                                            .toLowerCase()
-                                            .replace(/\b\w/g, (char: any) => char.toUpperCase())}
+                                        <span>
+                                            {concept
+                                                .toLowerCase()
+                                                .replace(/\b\w/g, (char: any) => char.toUpperCase())}
+                                        </span>
+                                        <CircleCheckBig />
+
                                     </Button>
                                 ))}
                             </div>

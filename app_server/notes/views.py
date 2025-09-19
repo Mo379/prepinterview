@@ -29,6 +29,7 @@ def rabiit_list(request, space_id=None, format=None):
     if request.method == "POST":
         try:
             space_id = h_decode(request.data["space_hid"])
+            rabiit_name = request.data["name"]
             rabiit_prompt = request.data["prompt"]
 
             space_obj = GeneralTutorSpace.objects.get(pk=space_id)
@@ -36,7 +37,7 @@ def rabiit_list(request, space_id=None, format=None):
 
             rabiit_obj = Rabiit.objects.create(
                 space=space_obj,
-                name=(rabiit_prompt),
+                name=rabiit_name,
                 prompt=rabiit_prompt,
             )
 
@@ -66,7 +67,7 @@ def rabiit_list(request, space_id=None, format=None):
                     here is information the user provided, this *MAY* include
                     things about them (CV) and the job description,
                     use this as a primary, source of information:
-                    {rabiit_obj.content}
+                    {space_obj.case_information}
                     """,
                 },
                 {
@@ -81,7 +82,7 @@ def rabiit_list(request, space_id=None, format=None):
                     "messages": messages
                 },
                 "function_app_endpoint": function_app_endpoint,
-                "structured_output_class": "cited_response",
+                "structured_output_class": "normal_response",
                 "access_token": str(short_token.access_token),
                 "lambda_url": settings.MODEL_STRUCTURED_STREAM_URL,
             }
@@ -191,9 +192,15 @@ def function_app_endpoint(request):
         if json_data["auth_key"] == settings.AUTH_KEY:
             if (
                 json_data["prompt_type_value"]
-                and json_data["prompt_type_value"] == "create_rabiit"
             ):
-                return functions_endpoint.create_rabiit(request, json_data)
+                if (
+                    json_data["prompt_type_value"] == "create_rabiit"
+                ):
+                    return functions_endpoint.create_rabiit(request, json_data)
+                if (
+                    json_data["prompt_type_value"] == "create_questions"
+                ):
+                    return functions_endpoint.create_questions(request, json_data)
             else:
                 return Response(
                     {"message": "Unknown error has occurred"},

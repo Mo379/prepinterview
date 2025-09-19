@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, Loader2, MessagesSquare, CirclePlus, Trash } from "lucide-react";
+import { BriefcaseBusiness, Loader2, MessagesSquare, CirclePlus } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import { useForm } from "react-hook-form";
 import { useAppStore } from "@/stores/appStore";
@@ -18,9 +18,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 
 export function CreateSpaceDialog() {
-    const { generalTutorCreateSpace, generalTutorLoading } = useGeneralTutorStore(
+    const { generalTutorCreateSpace, setActiveGeneralTutorSpace, generalTutorLoading } = useGeneralTutorStore(
         useShallow((state) => ({
             generalTutorCreateSpace: state.generalTutorCreateSpace,
+            setActiveGeneralTutorSpace: state.setActiveGeneralTutorSpace,
             generalTutorLoading: state.loading,
         })),
     )
@@ -37,10 +38,14 @@ export function CreateSpaceDialog() {
     const { register, handleSubmit, setError, formState: { errors } } = useForm<FormType>({
         resolver: zodResolver(FormSchema)
     })
+    const navigate = useNavigate()
 
 
     const onSubmit: SubmitHandler<FormType> = (data) => {
-        generalTutorCreateSpace(setError, data.name, data.context)
+        generalTutorCreateSpace(setError, data.name, data.context).then((space_hid) => {
+            navigate('/case')
+            setActiveGeneralTutorSpace({hid: space_hid, name: data.name})
+        })
         setOpen(false)
     }
 
@@ -124,14 +129,14 @@ export function Home() {
         })),
     )
     const {
-        setActiveGeneralTutorSpace,
+        generalTutorGetSpaceDetail,
 
         generalTutorSpaceList,
         generalTutorGetSpaceList,
         generalTutorLoading,
     } = useGeneralTutorStore(
         useShallow((state) => ({
-            setActiveGeneralTutorSpace: state.setActiveGeneralTutorSpace,
+            generalTutorGetSpaceDetail: state.generalTutorGetSpaceDetail,
             generalTutorSpaceList: state.generalTutorSpaceList,
             generalTutorGetSpaceList: state.generalTutorGetSpaceList,
             generalTutorLoading: state.loading,
@@ -141,9 +146,9 @@ export function Home() {
 
 
     const { setError } = useForm<any>()
-    useEffect(()=>{
+    useEffect(() => {
         generalTutorGetSpaceList(setError)
-        },[
+    }, [
     ])
 
     return (
@@ -169,8 +174,8 @@ export function Home() {
                                                 size="icon"
                                                 className='relative w-44 mr-1 h-10 mt-1 text-center !p-4 flex flex-row justify-center'
                                                 onClick={() => {
-                                                    setActiveGeneralTutorSpace(space)
                                                     navigate('/case')
+                                                    generalTutorGetSpaceDetail(setError, space.hid)
                                                 }}
                                                 key={`space_${space?.hid}`}
                                             >

@@ -37,7 +37,7 @@ const noteStateSchema = z.object({
     setRabiitContent: z.function(z.tuple([z.string(), z.any()])).returns(z.void()),
     addHighlightNote: z.function(z.tuple([z.any()])).returns(z.void()),
 
-    createRabiit: z.function(z.tuple([z.any(), z.boolean(), z.string(), z.string(), z.string(), z.string()]), z.promise(z.any())),
+    createRabiit: z.function(z.tuple([z.any(), z.string(), z.string(), z.string()]), z.promise(z.any())),
     getRabiits: z.function().args(z.any(), z.string()).returns(z.void()),
     deleteRabiit: z.function().args(z.any(), z.string()).returns(z.void()),
 });
@@ -129,7 +129,7 @@ export const useNoteStore = create(
         },
 
 
-        createRabiit: async (setError: any, is_general_tutor: boolean, lesson_hid: string, highlightedText: string, prompt: string, selectedImageUrl: string) => {
+        createRabiit: async (setError: any, space_hid: string, name: string, prompt: string) => {
             const accessToken = useUserStore.getState().auth.accessToken
             set((state) => ({
                 loading: { ...state.loading, createRabiit: true },
@@ -146,11 +146,9 @@ export const useNoteStore = create(
                             'Authorization': 'Bearer ' + String(accessToken),
                         },
                         body: JSON.stringify({
-                            is_general_tutor: is_general_tutor,
-                            lesson_hid: lesson_hid,
-                            highlightedText: highlightedText,
+                            space_hid: space_hid,
+                            name: name,
                             prompt: prompt,
-                            selectedImageUrl: selectedImageUrl,
                         }),
                     }
                 )
@@ -169,7 +167,7 @@ export const useNoteStore = create(
                 }));
                 useStreamStore.getState().runStream(
                     data.request_ticket,
-                    { 'rabiit_hid': data.data.hid, 'is_general_tutor': is_general_tutor },
+                    { 'rabiit_hid': data.data.hid },
                     'rabiits_general_tutor'
                 )
 

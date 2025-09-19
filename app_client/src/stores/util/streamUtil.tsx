@@ -28,17 +28,18 @@ export const handleSubmit = async (
     }
 
     // Determine how to track the "current lesson HID" based on flavour
-    let initialLessonHid: string;
-    let getCurrentLessonHid: () => string;
+    let initialSpaceHid: string;
+    let getCurrentSpaceHid: () => string;
     switch (flavour) {
+        case 'case_creator':
         case 'rabiits_general_tutor': {
-            initialLessonHid = 'memo'
-            getCurrentLessonHid = () => { return '' }
-            const lesson = useGeneralTutorStore.getState().generalTutorLesson;
-            initialLessonHid = typeof lesson === 'object' && 'hid' in lesson ? lesson.hid : 'memo';
-            getCurrentLessonHid = () => {
-                const cur = useGeneralTutorStore.getState().generalTutorLesson;
-                return typeof cur === 'object' && 'hid' in cur ? cur.hid : '';
+            initialSpaceHid = 'memo'
+            getCurrentSpaceHid = () => { return '' }
+            const space = useGeneralTutorStore.getState().generalTutorActiveSpace;
+            initialSpaceHid = space && typeof space === 'object' && 'hid' in space ? space.hid : 'memo';
+            getCurrentSpaceHid = () => {
+                const cur = useGeneralTutorStore.getState().generalTutorActiveSpace;
+                return cur && typeof cur === 'object' && 'hid' in cur ? cur.hid : '';
             };
             break;
         }
@@ -61,8 +62,8 @@ export const handleSubmit = async (
         chunkValue = decoder.decode(value);
         content += chunkValue;
 
-        const currentHid = getCurrentLessonHid();
-        if (currentHid !== initialLessonHid) {
+        const currentHid = getCurrentSpaceHid();
+        if (currentHid !== initialSpaceHid) {
             // If the user has switched lessons in the meantime, abort processing further chunks
             continue;
         }
@@ -70,7 +71,7 @@ export const handleSubmit = async (
         let finalContent: string | any | false = false;
 
         // Determine how to parse `content` into `finalContent`
-        if (flavour === 'rabiits_general_tutor') {
+        if (['rabiits_general_tutor', 'case_creator'].includes(flavour)) {
             // Always parse JSON for assessments
             const repaired = myjsonrepair(content);
             finalContent = repaired ? JSON.parse(repaired) : finalContent
@@ -87,6 +88,17 @@ export const handleSubmit = async (
                     ) {
                         useNoteStore.getState().setRabiitContent(
                             request_body.rabiit_hid,
+                            finalContent,
+                        );
+                    }
+                    break;
+                }
+                case 'case_creator': {
+                    if (
+                        request_body.space_hid
+                    ) {
+                        useGeneralTutorStore.getState().setQuestionsOutline(
+                            request_body.space_hid,
                             finalContent,
                         );
                     }

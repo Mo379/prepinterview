@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from "@nextui-org/react";
 
 export function EraseSpace(props: { space_hid: string }) {
     const { generalTutorDeleteSpace, setActiveGeneralTutorSpace } = useGeneralTutorStore(
@@ -82,9 +83,11 @@ export function Spaces() {
     )
     const {
         generalTutorActiveSpace,
+        generalTutorLoading,
     } = useGeneralTutorStore(
         useShallow((state) => ({
             generalTutorActiveSpace: state.generalTutorActiveSpace,
+            generalTutorLoading: state.loading,
         })),
     )
     const {
@@ -97,15 +100,15 @@ export function Spaces() {
     const navigate = useNavigate()
 
 
+    useEffect(() => {
+        resetNotes()
+    }, [generalTutorActiveSpace])
     if (!generalTutorActiveSpace || !('hid' in generalTutorActiveSpace)) {
         navigate('/')
         return null
     }
     const space_hid = generalTutorActiveSpace && 'hid' in generalTutorActiveSpace ? generalTutorActiveSpace.hid : ''
 
-    useEffect(() => {
-        resetNotes()
-    }, [generalTutorActiveSpace])
 
     return (
         <div className='flex flex-row  m-auto !min-h-full !break-words text-pretty px-1 md:px-2 dark:text-primary/80 w-full'>
@@ -120,16 +123,22 @@ export function Spaces() {
                                 !w-full
                             `}
                         >
-                            <h1 className='m-auto text-center underline underline-offset-4 text-3xl mb-8'>
+                            {generalTutorLoading.generalTutorGetSpaceDetail ? (
+                            <Skeleton className='rounded-2xl w-[80%] h-[50vh] m-auto' />
+                            ): (
+                                <>
+                            <h1 className = 'm-auto text-center underline underline-offset-4 text-3xl mb-8'>
                                 {generalTutorActiveSpace.name}
-                            </h1>
-                            <QuestionsOutline space_hid={space_hid} />
-                            <SheetRabbit space_hid={space_hid} />
-                            <EraseSpace space_hid={space_hid} />
-                        </div>
-                    </div>
+                        </h1>
+                        <QuestionsOutline space_hid={space_hid} />
+                        <SheetRabbit space_hid={space_hid} />
+                        <EraseSpace space_hid={space_hid} />
+                    </>
+                        )}
                 </div>
             </div>
         </div>
+            </div >
+        </div >
     )
 }

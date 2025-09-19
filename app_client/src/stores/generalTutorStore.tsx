@@ -4,10 +4,12 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import { useUserStore } from './userStore';
 import { handleGeneralError, handleGeneralSuccess } from '@/functions/errors';
 import { APIURL } from './serviceStore';
+import { useStreamStore } from './streamStore';
 
 
 const generalTutorLoadingType = z.object({
     generalTutorGetSpaceList: z.boolean(),
+    generalTutorGetSpaceDetail: z.boolean(),
     generalTutorDeleteSpace: z.boolean(),
     generalTutorCreateSpace: z.boolean(),
 });
@@ -20,6 +22,7 @@ const generalTutorStateSchema = z.object({
     toast: z.any(),
 
     generalTutorLogout: z.function(),
+    setQuestionsOutline: z.function(z.tuple([z.string(), z.any()])).returns(z.void()),
     resetLoading: z.function(),
     resetRouteTo: z.function(),
     resetToast: z.function(),
@@ -40,8 +43,9 @@ const generalTutorStateSchema = z.object({
     closeHeadingIndex: z.any(),
 
     generalTutorGetSpaceList: z.function(z.tuple([z.any()]), z.void()),
+    generalTutorGetSpaceDetail: z.function(z.tuple([z.any(), z.string()]), z.void()),
     generalTutorDeleteSpace: z.function(z.tuple([z.any(), z.string()]), z.void()),
-    generalTutorCreateSpace: z.function(z.tuple([z.any(), z.string(), z.string()]), z.void()),
+    generalTutorCreateSpace: z.function(z.tuple([z.any(), z.string(), z.string()]), z.promise(z.any())),
 
 });
 
@@ -52,6 +56,7 @@ export type generalTutorType = z.infer<typeof generalTutorStateSchema>
 const initial_state = {
     loading: {
         generalTutorGetSpaceList: false,
+        generalTutorGetSpaceDetail: false,
         generalTutorDeleteSpace: false,
         generalTutorCreateSpace: false,
     },
@@ -79,6 +84,20 @@ export const useGeneralTutorStore = create(
 
 
         generalTutorLogout: () => set((state) => ({ ...state, ...initial_state })),
+        setQuestionsOutline: (space_hid: string, final_content: any) => {
+            // Get the current list of lessons.
+            const activeSpace = get().generalTutorActiveSpace;
+
+            // Find the index of the lesson that needs to be updated.
+            if (activeSpace && activeSpace.hid === space_hid) {
+                set({
+                    generalTutorActiveSpace: {
+                        ...activeSpace,
+                        content: final_content
+                    },
+                });
+            }
+        },
         resetRouteTo: () => set({ routeto: null }),
         resetToast: () => set({ toast: null }),
         resetLoading: () => {
@@ -136,6 +155,45 @@ export const useGeneralTutorStore = create(
                 // Reset loading.userLogin to false
                 set((state) => ({
                     loading: { ...state.loading, generalTutorGetSpaceList: false },
+                }));
+            }
+        },
+        generalTutorGetSpaceDetail: async (setError: any, space_hid: string) => {
+            const accessToken = useUserStore.getState().auth.accessToken
+            set((state) => ({
+                loading: { ...state.loading, generalTutorGetSpaceDetail: true },
+            }));
+
+            await new Promise(resolve => setTimeout(resolve, 300));
+            try {
+                // Send a POST request to the login API
+                let response = await fetch(
+                    `${APIURL}/general_tutor/space_detail/${space_hid}.json`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + String(accessToken),
+
+                        },
+                    }
+                )
+
+                // Parse the response JSON
+                const data = await response.json();
+
+                // check and report errors
+                handleGeneralError(setError, set, response, data, 'Failed to fetch space detail!');
+                set({
+                    generalTutorActiveSpace: data.data,
+                });
+                handleGeneralSuccess(set, response, data, "Success: space detail fetched!", null)
+            } catch (error) {
+                console.error(error);
+            } finally {
+                // Reset loading.userLogin to false
+                set((state) => ({
+                    loading: { ...state.loading, generalTutorGetSpaceDetail: false },
                 }));
             }
         },
@@ -217,8 +275,14 @@ export const useGeneralTutorStore = create(
                         ...get().generalTutorSpaceList
                     ]
                 });
+                useStreamStore.getState().runStream(
+                    data.request_ticket,
+                    { 'space_hid': data.data.hid },
+                    'case_creator'
+                )
 
                 handleGeneralSuccess(set, response, data, "Success: your space is created!", null)
+                return data.data.hid
             } catch (error) {
                 console.error(error);
             } finally {

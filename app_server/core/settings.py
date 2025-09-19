@@ -262,7 +262,7 @@ FILE_UPLOAD_URL = os.path.join(
     decouple_config("model_stream_url"), "prepinterview_file_upload"
 )
 MODEL_STRUCTURED_STREAM_URL = os.path.join(
-    decouple_config("model_stream_url"), "prepinterview_structred_stream"
+    decouple_config("model_stream_url"), "prepinterview_structured_stream"
 )
 
 USAGE_FREQUENCY_LIMIT = 10

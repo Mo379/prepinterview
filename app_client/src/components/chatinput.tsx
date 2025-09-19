@@ -1,4 +1,4 @@
-import { HeartCrack, Loader2, MoveRight, Rabbit, Trash, X} from "lucide-react";
+import { HeartCrack, Loader2, Rabbit, Trash, X } from "lucide-react";
 import { useShallow } from "zustand/shallow";
 import { useAppStore } from "@/stores/appStore";
 
@@ -140,7 +140,6 @@ export function SheetRabbit(props: { space_hid: string }) {
             noteLoading: state.loading,
         })),
     )
-    const [expandedImage, setExpandedImage] = useState(false)
 
 
     const [activeRabiit, setActiveRabiit] = useState(undefined);
@@ -248,11 +247,6 @@ export function SheetRabbit(props: { space_hid: string }) {
                                             >
                                                 <Rabbit size={6} className={`${icon_style} !stroke-primary mt-auto mb-auto mr-4`} />
                                                 {rabiit.name}
-                                                {rabiit.highlighted_text || rabiit.selected_image_url && (
-                                                    <MoveRight className='mt-auto mb-auto mx-4' />
-                                                )}
-                                                {rabiit.highlighted_text && (rabiit.highlighted_text)}
-                                                {rabiit.selected_image_url && (rabiit.selected_image_url.split('/').at(-1))}
                                             </span>
                                         </div>
                                         <AccordionContent>
@@ -266,24 +260,6 @@ export function SheetRabbit(props: { space_hid: string }) {
                                                 `}
                                                 >
                                                     {rabiit.prompt} <br /> <br />
-                                                    {rabiit.highlighted_text && (rabiit.highlighted_text)}
-                                                    {rabiit.selected_image_url && (
-                                                        <img
-                                                            src={rabiit.selected_image_url}
-                                                            className={`
-                                                        m-auto
-                                                        ${expandedImage ? 'max-w-[65%]' : 'max-w-[15%]'}
-                                                        !border-2 border-info
-                                                        rounded-xl 
-                                                        shadow-md
-                                                        dark:shadow-gray-400 
-                                                        hover:shadow-lg
-                                                        hover:cursor-pointer
-                                                        dark:hover:shadow-gray-200 
-                                                        `}
-                                                            onClick={() => { setExpandedImage(expandedImage === false) }}
-                                                        />
-                                                    )}
                                                 </span>
                                                 <div className='flex flex-row  m-auto !min-h-full !break-words text-pretty px-1 md:px-2 dark:text-primary/80 w-full'>
                                                     <div className={`
@@ -291,26 +267,23 @@ export function SheetRabbit(props: { space_hid: string }) {
                                                             `}
                                                     >
                                                         <h1 className="!text-[16px] underline underline-offset-4 font-medium mb-8"> {rabiit.content['response_title']} </h1>
-                                                        {rabiit?.content?.paragraphs?.map((paragraph: any, paragraph_idx: number) => (
-                                                            <div key={`rabiit_${rabiit.hid}_paragraph_${paragraph_idx}`} className="mb-4">
-                                                                <p className="text-base leading-relaxed ml-2">
-                                                                    <span className="font-bold">{paragraph?.paragraph_heading}:</span>{' '}
-                                                                    <Markdown
-                                                                        className={`!inline`}
-                                                                        remarkPlugins={[remarkMath, remarkGfm]}
-                                                                        rehypePlugins={[
-                                                                            rehypeRaw,
-                                                                            rehypeKatex as any,
-                                                                            [rehypeHighlight, { ignoreMissing: true, plainTextInjection: true }],
-                                                                        ]}
-                                                                    >
-                                                                        {
-                                                                            formatMath(paragraph?.text)
-                                                                        }
-                                                                    </Markdown>
-                                                                </p>
-                                                            </div>
-                                                        ))}
+                                                        <div key={`rabiit_${rabiit.hid}_paragraph`} className="mb-4">
+                                                            <p className="text-base leading-relaxed ml-2">
+                                                                <Markdown
+                                                                    className={`!inline`}
+                                                                    remarkPlugins={[remarkMath, remarkGfm]}
+                                                                    rehypePlugins={[
+                                                                        rehypeRaw,
+                                                                        rehypeKatex as any,
+                                                                        [rehypeHighlight, { ignoreMissing: true, plainTextInjection: true }],
+                                                                    ]}
+                                                                >
+                                                                    {
+                                                                        formatMath(rabiit.content.response)
+                                                                    }
+                                                                </Markdown>
+                                                            </p>
+                                                        </div>
                                                         {streamLoading.streaming && (<Pulsing className='ml-auto mt-4' />)}
                                                     </div>
                                                 </div>
