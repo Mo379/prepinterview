@@ -13,8 +13,10 @@ export function QuestionsOutline(props: { space_hid: string }) {
             generalTutorActiveSpace: state.generalTutorActiveSpace,
         })),
     );
-    const { setRabiitsSheet, createRabiit } = useNoteStore(
+    const { setActiveRabiit, setRabiitsSheet, createRabiit, rabiits } = useNoteStore(
         useShallow((state) => ({
+            setActiveRabiit: state.setActiveRabiit,
+            rabiits: state.rabiits,
             setRabiitsSheet: state.setRabiitsSheet,
             createRabiit: state.createRabiit,
         })),
@@ -41,12 +43,16 @@ export function QuestionsOutline(props: { space_hid: string }) {
                                         variant={'outline'}
                                         className='flex flex-row justify-between flex-wrap h-auto max-w-full h-auto text-wrap ml-0'
                                         onClick={() => {
-                                            createRabiit(
-                                                setError,
-                                                props.space_hid,
-                                                `${concept}`,
-                                                `In only a few paragraphs explain the following concept in the context of this material: ${concept_section.category_name}:${concept}`,
-                                            )
+                                            if (!rabiits?.length || rabiits?.findIndex((rabiit: any) => rabiit.name === concept) === -1) {
+                                                createRabiit(
+                                                    setError,
+                                                    props.space_hid,
+                                                    `${concept}`,
+                                                    `In only a few paragraphs explain the following concept in the context of this material: ${concept_section.category_name}:${concept}`,
+                                                )
+                                            } else {
+                                                setActiveRabiit(rabiits[rabiits?.findIndex((rabiit: any) => rabiit.name === concept)].hid)
+                                            }
                                             setRabiitsSheet(true)
                                         }}
                                     >
@@ -55,7 +61,9 @@ export function QuestionsOutline(props: { space_hid: string }) {
                                                 .toLowerCase()
                                                 .replace(/\b\w/g, (char: any) => char.toUpperCase())}
                                         </span>
-                                        <CircleCheckBig />
+                                        {rabiits?.findIndex((rabiit: any) => rabiit.name === concept) > -1 && (
+                                            <CircleCheckBig />
+                                        )}
 
                                     </Button>
                                 ))}

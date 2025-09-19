@@ -123,6 +123,8 @@ export function SheetRabbit(props: { space_hid: string }) {
         setRabiitsSheet,
 
         rabiits,
+        activeRabiit,
+        setActiveRabiit,
 
         getRabiits,
         noteLoading,
@@ -134,6 +136,8 @@ export function SheetRabbit(props: { space_hid: string }) {
             setRabiitsSheet: state.setRabiitsSheet,
 
             rabiits: state.rabiits,
+            activeRabiit: state.activeRabiit,
+            setActiveRabiit: state.setActiveRabiit,
 
             createRabiit: state.createRabiit,
             getRabiits: state.getRabiits,
@@ -142,7 +146,6 @@ export function SheetRabbit(props: { space_hid: string }) {
     )
 
 
-    const [activeRabiit, setActiveRabiit] = useState(undefined);
     const [openDeleteRabiit, setOpenDeleteRabiit] = useState<any | null>(null)
     const FormSchema = z.object({
         prompt: z.string().min(3, 'min 3 characters.'),

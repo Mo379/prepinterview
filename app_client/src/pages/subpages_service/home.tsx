@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import InlineAlertComponent, { handleAlertColors } from "@/components/errors";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useNoteStore } from "@/stores/noteStore";
 
 
 export function CreateSpaceDialog() {
@@ -129,6 +130,15 @@ export function Home() {
         })),
     )
     const {
+        resetNotes,
+        getRabiits,
+    } = useNoteStore(
+        useShallow((state) => ({
+            resetNotes: state.resetNotes,
+            getRabiits: state.getRabiits,
+        })),
+    )
+    const {
         generalTutorGetSpaceDetail,
 
         generalTutorSpaceList,
@@ -176,6 +186,8 @@ export function Home() {
                                                 onClick={() => {
                                                     navigate('/case')
                                                     generalTutorGetSpaceDetail(setError, space.hid)
+                                                    resetNotes()
+                                                    getRabiits(setError, space.hid)
                                                 }}
                                                 key={`space_${space?.hid}`}
                                             >

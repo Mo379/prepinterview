@@ -31,9 +31,11 @@ const noteStateSchema = z.object({
     openHighlightPopup: z.boolean(),
     rabiitsSheet: z.boolean(),
     rabiits: z.any(),
+    activeRabiit: z.any(),
     highlightNotes: z.any(),
 
     setRabiitsSheet: z.function().args(z.boolean()).returns(z.void()),
+    setActiveRabiit: z.function().args(z.number()).returns(z.void()),
     setRabiitContent: z.function(z.tuple([z.string(), z.any()])).returns(z.void()),
     addHighlightNote: z.function(z.tuple([z.any()])).returns(z.void()),
 
@@ -57,6 +59,7 @@ const initial_state = {
     openHighlightPopup: false,
     rabiitsSheet: false,
     rabiits: null,
+    activeRabiit: null,
     highlightNotes: [],
 }
 
@@ -94,6 +97,11 @@ export const useNoteStore = create(
                     selectedImage: ''
                 }));
             }
+        },
+        setActiveRabiit: (value: number) => {
+            set(() => ({
+                activeRabiit: value
+            }));
         },
 
         setRabiitContent: (rabiit_hid: string, final_content: any) => {

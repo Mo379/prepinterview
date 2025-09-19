@@ -1,11 +1,9 @@
 import { SheetRabbit } from "@/components/chatinput";
 import { useShallow } from "zustand/shallow";
-import { useEffect } from "react";
 import { useAppStore } from "@/stores/appStore";
 
 import { useGeneralTutorStore } from "@/stores/generalTutorStore";
 import { QuestionsOutline } from "@/components/questionsoutline";
-import { useNoteStore } from "@/stores/noteStore";
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -90,19 +88,8 @@ export function Spaces() {
             generalTutorLoading: state.loading,
         })),
     )
-    const {
-        resetNotes,
-    } = useNoteStore(
-        useShallow((state) => ({
-            resetNotes: state.resetNotes,
-        })),
-    )
     const navigate = useNavigate()
 
-
-    useEffect(() => {
-        resetNotes()
-    }, [generalTutorActiveSpace])
     if (!generalTutorActiveSpace || !('hid' in generalTutorActiveSpace)) {
         navigate('/')
         return null
@@ -130,8 +117,8 @@ export function Spaces() {
                             <h1 className = 'm-auto text-center underline underline-offset-4 text-3xl mb-8'>
                                 {generalTutorActiveSpace.name}
                         </h1>
-                        <QuestionsOutline space_hid={space_hid} />
                         <SheetRabbit space_hid={space_hid} />
+                        <QuestionsOutline space_hid={space_hid} />
                         <EraseSpace space_hid={space_hid} />
                     </>
                         )}
