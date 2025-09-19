@@ -176,7 +176,7 @@ export function SheetRabbit(props: { space_hid: string }) {
                 e.preventDefault()
                 setRabiitsSheet(true)
             }}>
-                <span className={`${button_style} ml-1 flex flex-row`}
+                <span className={`${button_style} ml-1 flex flex-row w-fit !m-auto`}
                     onClick={(e) => {
                         e.stopPropagation();
                         if (rabiits === null) {
@@ -184,7 +184,7 @@ export function SheetRabbit(props: { space_hid: string }) {
                         }
                     }}
                 >
-                    <Rabbit size={14} className={`${icon_style} !stroke-primary`} />
+                    <Rabbit size={14} className={`${icon_style} !stroke-primary !w-[50px] !h-[50px]`} />
                 </span>
             </SheetTrigger>
             <SheetContent hideClose={false} className={`${isMdScreen ? '!min-w-full p-2' : '!min-w-[85dvw]'}`}>

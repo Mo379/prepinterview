@@ -12,7 +12,7 @@ export const HIW_Hero = () => {
                         <div className='flex flex-col m-auto justify-center'>
                             <BriefcaseBusiness strokeWidth={0.55} absoluteStrokeWidth className='m-auto w-[150px] h-[150px] md:w-[200px] md:h-[200px]' />
                             <div className='text-3xl text-center mb-8'>
-                                Prep Interview
+                                Prep Interview Me
                                 <br />
                             </div>
                         </div>
@@ -22,7 +22,7 @@ export const HIW_Hero = () => {
                 <div className={`mt-4 flex flex-col justify-center w-full border-2 broder-primary/44 p-2 rounded-xl`}>
                     <iframe
                         className="m-auto min-w-[80%] min-h-[40dvh] mt-2"
-                        src={`https://www.youtube.com/embed/erjcf1n2fMo`}
+                        src={`https://www.youtube.com/embed/ZW6pcTfVJnc`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                         title={`Embedded youtube`}
