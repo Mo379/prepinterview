@@ -30,6 +30,7 @@ register_converter(HashIdConverter, "hashid")
 
 
 urlpatterns = [
+    path("test_emails", userViews.test_emails, name="test_emails"),
     path("signup", userViews.signup, name="signup"),
     path("onboarding", userViews.onboarding, name="onboarding"),
     path(
@@ -42,7 +43,8 @@ urlpatterns = [
     path("re_login", TokenRefreshView.as_view(), name="token_refresh"),
     path("google_login", userViews.google_login, name="google_login"),
     #
-    path("password_reset_trigger", userViews.pwdreset_trigger, name="pwdreset_trigger"),
+    path("password_reset_trigger",
+         userViews.pwdreset_trigger, name="pwdreset_trigger"),
     path("password_reset_return", userViews.pwdreset_return, name="pwdreset_return"),
     path("deleteaccount", userViews.deleteaccount, name="deleteaccount"),
     path(

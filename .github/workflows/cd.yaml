@@ -85,7 +85,8 @@ jobs:
 
     - name: Create .env File
       run: |
-        echo "auth_key=${{secrets.AUTH_KEY}}" > .env
+        echo "app_name=${{secrets.app_name}}" > .env
+        echo "auth_key=${{secrets.AUTH_KEY}}" >> .env
         echo "HasdIdsSalt=${{secrets.HASDIDSSALT}}" >> .env
         echo "Captcha_secret=${{secrets.Captcha_secret}}" >> .env
         echo "model_stream_url=${{secrets.MODEL_STREAM_URL}}" >> .env
@@ -115,9 +116,8 @@ jobs:
         echo "Stripe_test_publishable=${{secrets.Stripe_test_publishable}}" >> .env
         echo "Stripe_test_secret=${{secrets.Stripe_test_secret}}" >> .env
         echo "Stripe_pro_price=${{secrets.Stripe_pro_price}}" >> .env
-        echo "SES_function_name=${{secrets.SES_function_name}}" >> .env
-        echo "SES_region=${{secrets.SES_region}}" >> .env
         echo "SES_EMAIL_main=${{secrets.SES_EMAIL_main}}" >> .env
+        echo "N8N_email_webhook_url=${{secrets.N8N_email_webhook_url}}" >> .env
         echo "Site_domain=${{secrets.Site_domain}}" >> .env
         echo "front_site_domain=${{secrets.front_site_domain}}" >> .env
 

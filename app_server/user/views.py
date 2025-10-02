@@ -27,6 +27,128 @@ from google.auth.transport import requests as google_requests
 
 
 @api_view(["POST"])
+def test_emails(request, format=None):
+    if request.method == "POST":
+        try:
+            user_first_name = 'Mustafa'
+            user_username = 'Customer'
+            user_email = 'pro.mustafa.omar@gmail.com'
+            sendMailLambda(
+                {
+                    "templateName": "accountDeletion",
+                    "parameters": {
+                        "firstName": user_first_name,
+                    },
+                    "toEmails": [user_email],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+            sendMailLambda(
+                {
+                    "templateName": "welcomeAboard",
+                    "parameters": {
+                        "firstName": user_first_name,
+                    },
+                    "toEmails": [user_email],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+            sendMailLambda(
+                {
+                    "templateName": "passwordReset",
+                    "parameters": {
+                        "firstName": user_first_name,
+                        "userName": user_username,
+                        "resetLink": f"{settings.FRONT_SITE_URL}"
+                        + f"/auth/reset_password/{'uid'}/{'token'}",
+                    },
+                    "toEmails": [user_email],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+            sendMailLambda(
+                {
+                    "templateName": "accountActivation",
+                    "parameters": {
+                        "firstName": user_first_name,
+                        "activationLink": f"{ settings.FRONT_SITE_URL }"
+                        + f"/auth/account_activation/{'uid'}/{'token'}",
+                    },
+                    "toEmails": [user_email],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+
+            sendMailLambda(
+                {
+                    "templateName": "userContactInternal",
+                    "parameters": {
+                        "firstName": user_first_name,
+                        "email": user_email,
+                        "messageSubject": 'message_subject',
+                        "message": 'message',
+                    },
+                    "toEmails": [settings.EMAIL_MAIN],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+            sendMailLambda(
+                {
+                    "templateName": "userContactConfirmation",
+                    "parameters": {
+                        "firstName": user_first_name,
+                    },
+                    "toEmails": [user_email],
+                    "fromEmail": settings.EMAIL_MAIN,
+                }
+            )
+        except Exception as e:
+            print(e)
+            return Response(
+                {
+                    "silent": 0,
+                    "message": "Something went wrong with the test.",
+                    "toast_variant": "destructive",
+                    "errors": [
+                        {
+                            "name": "root",
+                            "type": "manual",
+                            "alert_type": "destructive",
+                            "message": "Something went wrong.",
+                        }
+                    ],
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        else:
+            return Response(
+                {
+                    "silent": 0,
+                    "message": "Testing Done.",
+                    "toast_variant": "success",
+                },
+                status=status.HTTP_200_OK,
+            )
+    else:
+        return Response(
+            {
+                "silent": 0,
+                "message": "Subject and message required.",
+                "toast_variant": "destructive",
+                "errors": [
+                    {
+                        "name": "root",
+                        "type": "manual",
+                        "alert_type": "destructive",
+                        "message": "Please provide the required fields.",
+                    }
+                ],
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+
+@api_view(["POST"])
 def google_login(request, format=None):
     if request.method == "POST":
         try:
@@ -48,6 +170,17 @@ def google_login(request, format=None):
                     "google_login": True,
                 },
             )
+            if created:
+                sendMailLambda(
+                    {
+                        "templateName": "welcomeAboard",
+                        "parameters": {
+                            "firstName": user.first_name,
+                        },
+                        "toEmails": [user.email],
+                        "fromEmail": settings.EMAIL_MAIN,
+                    }
+                )
 
             assert user, 'user'
 
@@ -346,7 +479,8 @@ def onboarding(request, format=None):
     if request.method == "POST":
         try:
             if (
-                User.objects.filter(username__iexact=request.data["username"]).exists()
+                User.objects.filter(
+                    username__iexact=request.data["username"]).exists()
                 and request.user.username != request.data["username"]
             ):
                 return Response(
@@ -424,7 +558,8 @@ def account_information_update(request, format=None):
     if request.method == "POST":
         try:
             if (
-                User.objects.filter(username__iexact=request.data["username"]).exists()
+                User.objects.filter(
+                    username__iexact=request.data["username"]).exists()
                 and request.user.username != request.data["username"]
             ):
                 return Response(
@@ -714,7 +849,8 @@ def updatepassword(request):
         try:
             pass_current = request.data["password_current"]
             pass_new = request.data["password_new"]
-            user = authenticate(request, pk=request.user.id, password=pass_current)
+            user = authenticate(request, pk=request.user.id,
+                                password=pass_current)
         except Exception:
             return Response(
                 {

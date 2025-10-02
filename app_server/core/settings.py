@@ -21,6 +21,7 @@ from botocore.config import Config
 
 
 # HashIds object
+APP_NAME = decouple_config("app_name")
 HASHIDS = Hashids(salt=decouple_config("HasdIdsSalt"), min_length=8)
 CAPTCHA_SECRET = decouple_config("Captcha_secret")
 DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000
@@ -237,9 +238,8 @@ STATIC_ROOT = "staticfiles/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # SMTP settings
-EMAIL_FUNCTION_NAME = decouple_config("SES_function_name")
-EMAIL_REGION = decouple_config("SES_region")
 EMAIL_MAIN = decouple_config("SES_EMAIL_main")
+EMAIL_WEBHOOK_URL = decouple_config("N8N_email_webhook_url")
 
 
 # Change to True in production

@@ -1,24 +1,29 @@
-import boto3
+from user.models import User
+import requests
 
-import json
 from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils import six
 
 
 # Function to send mail
 def sendMailLambda(payload):
-    lambda_client = boto3.client(
-        "lambda",
-        region_name=settings.EMAIL_REGION,
-        aws_access_key_id=settings.AWS_ACCESS,
-        aws_secret_access_key=settings.AWS_SECRET,
-    )
-    lambda_client.invoke(
-        FunctionName=settings.EMAIL_FUNCTION_NAME,
-        Payload=json.dumps(payload),
-        InvocationType="Event",
-    )
+    try:
+        url = settings.EMAIL_WEBHOOK_URL
+        admin = User.objects.get(username="Admin")
+        short_token = RefreshToken.for_user(admin)
+        headers = {
+            "Authorization": f"Bearer {str(short_token.access_token)}",
+            "Content-Type": "application/json",
+        }
+        payload = {**payload, 'app_name': settings.APP_NAME}
+        response = requests.post(url, json=payload, headers=headers)
+        assert response.status_code == 200, "Email Sending Failed"
+    except Exception as e:
+        raise e
+    else:
+        return
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
