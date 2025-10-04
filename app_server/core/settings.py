@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     # app
+    "blog.apps.BlogConfig",
     "notes.apps.NotesConfig",
     "general_tutor.apps.GeneralTutorConfig",
     "user.apps.UserConfig",
