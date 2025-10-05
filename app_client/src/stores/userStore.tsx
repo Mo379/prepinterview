@@ -720,7 +720,6 @@ export const useUserStore = create(
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + String(get().auth.accessToken),
                         },
                     }
                 )
@@ -754,9 +753,7 @@ export const useUserStore = create(
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Bearer ' + String(get().auth.accessToken),
                         },
-                        body: JSON.stringify({})
                     }
                 )
 
