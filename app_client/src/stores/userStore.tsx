@@ -51,6 +51,9 @@ const userLoadingSchema = z.object({
     userLogout: z.boolean(),
     userAccountDeletion: z.boolean(),
     userUpdateToken: z.boolean(),
+
+    blogList: z.boolean(),
+    blogDetail: z.boolean(),
 })
 
 
@@ -78,7 +81,12 @@ const userStateSchema = z.object({
     userResetPassword: z.function(z.tuple([z.any(), z.string(), z.string(), z.string(), z.string()]), z.void()),
     userActivation: z.function(z.tuple([z.any(), z.string(), z.string()]), z.void()),
     userUpdateToken: z.function(z.tuple([z.string()]), z.void()),
-    userGoogleAuthResponse: z.any()
+    userGoogleAuthResponse: z.any(),
+
+    blogList: z.function(z.tuple([z.any()]), z.promise(z.any())),
+    blogDetail: z.function(z.tuple([z.any(), z.string()]), z.promise(z.any())),
+
+
 })
 
 
@@ -102,6 +110,9 @@ export const useUserStore = create(
             userLogout: false,
             userAccountDeletion: false,
             userUpdateToken: false,
+
+            blogList: false,
+            blogDetail: false,
 
 
         },
@@ -696,6 +707,76 @@ export const useUserStore = create(
                 }));
             }
         },
+        blogList: async (setError: any) => {
+            set((state) => ({
+                loading: { ...state.loading, blogList: true },
+            }));
+            await new Promise(resolve => setTimeout(resolve, 300));
+            try {
+                // Send a POST request to the login API
+                let response = await fetch(
+                    `${APIURL}/blog/blog_list.json`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + String(get().auth.accessToken),
+                        },
+                    }
+                )
+
+                // Parse the response JSON
+                const data = await response.json();
+
+                // check and report errors
+                handleGeneralError(setError, set, response, data, 'Failed to list blogs!')
+                handleGeneralSuccess(set, response, data, "Success: blogs listed!", null)
+                return data.data
+            } catch (error) {
+                console.error(error);
+            } finally {
+                // Reset loading.userLogin to false
+                set((state) => ({
+                    loading: { ...state.loading, blogList: false },
+                }));
+            }
+        },
+        blogDetail: async (setError: any, slug: string) => {
+            set((state) => ({
+                loading: { ...state.loading, blogDetail: true },
+            }));
+            await new Promise(resolve => setTimeout(resolve, 300));
+            try {
+                // Send a POST request to the login API
+                let response = await fetch(
+                    `${APIURL}/blog/blog_detail/${slug}.json`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + String(get().auth.accessToken),
+                        },
+                        body: JSON.stringify({})
+                    }
+                )
+
+                // Parse the response JSON
+                const data = await response.json();
+
+                // check and report errors
+                handleGeneralError(setError, set, response, data, 'Failed to load blog!')
+                handleGeneralSuccess(set, response, data, "Success: blog loaded!", null)
+                return data.data
+            } catch (error) {
+                console.error(error);
+            } finally {
+                // Reset loading.userLogin to false
+                set((state) => ({
+                    loading: { ...state.loading, blogDetail: false },
+                }));
+            }
+        },
+
     }),
         {
             name: 'user-storage', // name of the item in the storage (must be unique)

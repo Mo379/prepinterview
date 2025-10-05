@@ -32,6 +32,7 @@ import { useStreamStore } from './stores/streamStore';
 import 'katex/dist/katex.min.css'
 import 'highlight.js/styles/tokyo-night-dark.css'; // or another highlight.js theme
 import { useNoteStore } from './stores/noteStore';
+import { BlogDetail, BlogList } from './components/blog';
 
 
 
@@ -258,7 +259,7 @@ function App() {
             <Route
                 path="/"
                 element={
-                    <Layout/>
+                    <Layout />
                 }
             >
                 {/* Define all your nested routes here */}
@@ -297,6 +298,9 @@ function App() {
                     <Route path="account/billing" element={<Billing />} />
 
                     {/* Catch-all route */}
+                    <Route path="blog" element={<BlogList />} />
+                    <Route path="blog/:slug" element={<BlogDetail />} />
+
                     <Route path="*" element={<HowItWorks />} />
                 </Route>
             </Route>

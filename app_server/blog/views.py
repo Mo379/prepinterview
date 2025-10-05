@@ -38,7 +38,9 @@ def blog_list(request, lesson_type=None, lesson_id=None, format=None):
 def blog_detail(request, slug, format=None):
     if request.method == "GET":
         try:
-            blog = Blog.objects.get(slug=slug)
+            if '.json' in slug:
+                slug = slug.replace('.json', '')
+            blog = Blog.objects.get(slug__iexact=slug)
         except Exception:
             return Response(
                 {

@@ -28,6 +28,7 @@ register_converter(HashIdConverter, "hashid")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("blog/", include("blog.urls")),
     path("user/", include("user.urls")),
     path("notes/", include("notes.urls")),
     path("general_tutor/", include("general_tutor.urls")),

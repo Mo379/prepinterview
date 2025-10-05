@@ -6,6 +6,17 @@ from blog.models import (
 )
 
 
+class BlogListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Blog
+        fields = [
+            "slug",
+            "title",
+            "created_at",
+        ]
+
+
 class BlogSerializer(serializers.ModelSerializer):
 
     class Meta:

@@ -1,4 +1,4 @@
-import { CircleHelp, Mail, Cookie, Lock, MessageCircleQuestion, Handshake } from "lucide-react"
+import { CircleHelp, Mail, Cookie, Lock, MessageCircleQuestion, Handshake, Rss } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 "use client"
 
@@ -35,6 +35,13 @@ function Footer() {
                     >
                         <Mail size={20} className='mt-auto mb-auto' /> <span className="mt-auto mb-auto" >Email </span>
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                        onClick={() => navigate('/blog')}
+                        className="flex flex-row gap-2 ml-4 cursor-pointer mb-2 text-ring hover:text-primary text-sm mt-2"
+                    >
+                        <Rss size={20} className='mt-auto mb-auto' /> <span className="mt-auto mb-auto" >Blog </span>
+                    </DropdownMenuItem>
+
                     <DropdownMenuLabel>Legal</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
