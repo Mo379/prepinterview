@@ -17,16 +17,42 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path, register_converter
+from django.contrib.sitemaps.views import sitemap
 
 
 from core.utils import HashIdConverter
 from rest_framework.urlpatterns import format_suffix_patterns
 
+from core.sitemaps import (
+    StaticViewSitemap,
+    BlogSitemap,
+)
+
 
 register_converter(HashIdConverter, "hashid")
 
+sitemaps = {
+    "static": StaticViewSitemap,
+}
+blog_sitemap = {
+    'blogs': BlogSitemap(),
+}
+
 
 urlpatterns = [
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+    path(
+        "blog_sitemap.xml",
+        sitemap,
+        {"sitemaps": blog_sitemap},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
+
     path("admin/", admin.site.urls),
     path("blog/", include("blog.urls")),
     path("user/", include("user.urls")),
